@@ -1,7 +1,9 @@
 const {Router} = require('express');
 const Leave = require('../database/Leave');
 const User = require('../database/userModel');
+const Project = require('../database/Project')
 const {Types} = require('mongoose');
+const generateReport = require('../report/leave-report')
 
 function getLeaveDays(startDate, endDate) {
   const difference = Math.round((endDate - startDate) / (1000*60*60*24));
@@ -87,8 +89,13 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const request = await Leave.findById(req.params.id)
-      .populate({path: 'author', select: ['firstName', 'lastName']});
-    res.json(request)
+      .populate({
+        path: 'author',
+        select: ['firstName', 'lastName', 'username', 'leavesAvailable', 'project', 'supervisor']
+      });
+    const project = await Project.findById(request.author.project, {name: 1})
+    
+    res.json({...request._doc, project: project.name})
   } catch (err) {
     console.error(err.message)
     res.status(500).send(err)
@@ -145,6 +152,19 @@ router.patch('/status/:id', async (req, res) => {
     console.error(err)
     res.status(500).send(err)
   }
+})
+
+router.post('/report/:id', async (req, res) => {
+  try {
+    generateReport('E:\\text_alignment.pdf', req.body)
+    res.status(201).json({
+      message: 'Звіт завантажений'
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).send(err)
+  }
+  
 })
 
 module.exports = router;

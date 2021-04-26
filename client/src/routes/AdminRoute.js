@@ -7,6 +7,7 @@ import Employees from "../pages/admin/Employees";
 import AddEmployee from "../pages/admin/AddEmployee";
 import EmployeeDetails from "../pages/admin/EmployeeDetails";
 import ServiceRoutes from "./functional/ServiceRoutes";
+import Payment from "../pages/payment/Payment";
 
 export default function AdminRoute() {
   return (
@@ -19,6 +20,9 @@ export default function AdminRoute() {
       <Route exact path="/employees" component={Employees} />
       <Route exact path="/employees/new" component={AddEmployee} />
       <Route exact path="/employees/:id" component={EmployeeDetails} />
+      <Route exact path="/payment" render={() =>
+        <Payment role='admin' />
+      } />
       <ServiceRoutes admin={true} />
       <Redirect to="/" />
     </Switch>

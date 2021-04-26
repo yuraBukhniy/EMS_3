@@ -8,8 +8,9 @@ import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import {useParams} from "react-router-dom";
+import convertDate from "../../components/ConvertDate";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   marginDown: {
     marginBottom: 20,
   },
@@ -23,13 +24,19 @@ const useStyles = makeStyles({
     maxWidth: 400,
     marginBottom: 20
   },
-});
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+  cancel: {
+    margin: theme.spacing(3, 0, 2),
+    marginLeft: 10
+  },
+}));
 
-export default function LeaveDetails() {
+export default function LeaveDetails({lead}) {
   const classes = useStyles();
   const [leave, setLeave] = useState({});
-  const [status, setStatus] = useState('');
-  const [reply, setReply] = useState('');
+  //const [status, setStatus] = useState('');
   // const leadUsername = JSON.parse(localStorage.getItem('user')).username;
   const leaveId = useParams().id;
   
@@ -40,49 +47,81 @@ export default function LeaveDetails() {
       })
   }, []);
   
-  function changeStatusHandler(value) {
-    setStatus(value)
-  }
-  
-  function changeReplyHandler(value) {
-    setReply(value)
-  }
-  
-  function buttonHandler() {
-    axios.patch(`http://localhost:5000/service/change/${leaveId}`, {status, reply})
-      .then(resp => {
-        console.log(resp.data)
+  function submitHandler() {
+    axios.patch(`http://localhost:5000/leave/status/${leaveId}`, {status: 'Прийнято'})
+      .then(res => {
+        console.log(res.data)
       })
     //window.location = '/service';
   }
   
-  const statuses = ['У черзі', 'Відхилено', 'В процесі', 'Виконано', 'Закрито'];
+  function rejectHandler() {
+    axios.patch(`http://localhost:5000/leave/status/${leaveId}`, {status: 'Відхилено'})
+      .then(res => {
+        console.log(res.data)
+      })
+    //window.location = '/service';
+  }
+  
+  function generateReport() {
+    axios.post(`http://localhost:5000/leave/report/${leaveId}`, {
+      ...leave,
+      startDate: convertDate(leave.startDate),
+      endDate: convertDate(leave.endDate)
+    })
+      .then(res => {
+        console.log(res.data)
+      })
+  }
   
   return (
     <Grid container spacing={4}>
       <Grid item xs={12} md={6}>
         <Typography className={classes.marginDown} variant='h4'>
-          {leave.description}
+          Запит на відпустку
         </Typography>
-        <Typography color="textSecondary">
-          Дата початку: {leave.startDate}
+        <Typography>
+          Дата початку: {convertDate(leave.startDate)}
         </Typography>
-        <Typography color="textSecondary">
-          Дата закінчення: {leave.endDate}
+        <Typography>
+          Дата закінчення: {convertDate(leave.endDate)}
         </Typography>
-        <Typography color="textSecondary">
+        <Typography>
+          Тривалість: {leave.days} {leave.days === 1 ? 'робочий день' : leave.days < 5 ? 'робочих дні' : 'робочих днів'}
+        </Typography>
+        <Typography>
           Статус: {leave.status}
         </Typography>
-        <Typography color="textSecondary">
-          Автор: {leave.author ? `${leave.author.firstName} ${leave.author.lastName}` : null}
+        <Typography variant='h6' className={classes.marginUp}>
+          Працівник: {leave.author ? `${leave.author.firstName} ${leave.author.lastName}` : null}
         </Typography>
-        {/*<Typography className={classes.marginUp} variant='h5'>*/}
-        {/*  Опис*/}
-        {/*</Typography>*/}
-        {/*<Divider />*/}
-        {/*<Typography variant='h6'>*/}
-        {/*  {leave.description}*/}
-        {/*</Typography>*/}
+        <Typography>
+          Кількість днів, доступна працівнику для відпустки:
+        </Typography>
+        
+          {leave.author ?
+            <ul>
+              <li>
+                оплачувана: {leave.author.leavesAvailable ?
+                `${leave.author.leavesAvailable.paid}` : null}
+              </li>
+              <li>
+                неоплачувана: {leave.author.leavesAvailable ?
+                `${leave.author.leavesAvailable.unpaid}` : null}
+              </li>
+              <li>
+                лікарняні: {leave.author.leavesAvailable ?
+                `${leave.author.leavesAvailable.illness}` : null}
+              </li>
+            </ul> : null}
+        
+        <Typography className={classes.marginUp} variant='h5'>
+          Опис
+        </Typography>
+        <Divider />
+        <Typography variant='h6'>
+          {leave.description}
+        </Typography>
         {/*<Typography className={classes.marginUp} variant='h5'>*/}
         {/*  Відповідь*/}
         {/*</Typography>*/}
@@ -90,6 +129,36 @@ export default function LeaveDetails() {
         {/*<Typography className={classes.marginDown} color="h6">*/}
         {/*  {leave.reply || 'Немає відповіді'}*/}
         {/*</Typography>*/}
+        {lead && leave.status === 'Очікує підтвердження' ?
+          <>
+            <Button
+              type="button"
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={submitHandler}
+            >
+              Прийняти
+            </Button>
+            <Button
+              type="button"
+              variant="contained"
+              color="secondary"
+              className={classes.cancel}
+              onClick={rejectHandler}
+            >
+              Відхилити
+            </Button>
+          </> : null}
+        <Button
+          type="button"
+          variant="contained"
+          color="default"
+          className={classes.cancel}
+          onClick={generateReport}
+        >
+          Звіт у PDF
+        </Button>
       </Grid>
       
     </Grid>

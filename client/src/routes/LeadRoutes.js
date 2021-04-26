@@ -9,6 +9,7 @@ import ServiceRoutes from "./functional/ServiceRoutes";
 import NewLeave from "../pages/leave/NewLeave";
 import LeaveDetails from "../pages/leave/LeaveDetails";
 import EmployeeDetails from "../pages/EmployeeDetails";
+import Payment from "../pages/payment/Payment";
 
 export default function LeadRoutes() {
   return (
@@ -25,7 +26,10 @@ export default function LeadRoutes() {
         <LeaveMgmtPage role='teamLead' />}
       />
       <Route exact path='/leave/new' component={NewLeave} />
-      <Route exact path='/leave/:id' component={LeaveDetails} />
+      <Route exact path='/leave/:id' render={() =>
+        <LeaveDetails lead={true} />}
+      />
+      <Route exact path='/payment' component={Payment} />
       <ServiceRoutes admin={false} />
         <Route exact path="/user" component={EmployeeDetails} />
         <Route exact path="/:id" component={EmployeeDetails} />

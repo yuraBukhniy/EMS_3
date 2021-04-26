@@ -3,6 +3,7 @@ const Candidate = require('../database/candidateModel');
 const User = require('../database/userModel');
 const bcrypt = require('bcryptjs');
 const sendCredentials = require('../email/credentials-sender')
+const sendResult = require('../email/result-sender')
 
 const router = Router();
 
@@ -47,18 +48,24 @@ router.get('/:id', async (req, res) => {
 
 router.patch('/edit/:id', async (req, res) => {
   try {
-    const {status, interviewDate} = req.body;
-    
+    //const {status, interviewDate, firstName, lastName, email, position} = req.body;
+    const {newCandData, candidate} = req.body
+    //const {firstName, lastName, email, position} = candidate
     const setDataToUpdate = (status, date) => {
-      console.log(date)
       if(status && date) return {status, interviewDate: date};
       else if(status) return {status};
       else if(date) return {interviewDate: date};
       else return null
     };
-    const dataToUpdate = setDataToUpdate(status, interviewDate);
+    const dataToUpdate = setDataToUpdate(newCandData.status, newCandData.interviewDate);
     if(dataToUpdate) {
       await Candidate.findByIdAndUpdate(req.params.id, dataToUpdate);
+      if(newCandData.status === 'Пропозиція') {
+        await sendResult(candidate, true)
+      }
+      if(newCandData.status === 'Співбесіда не пройдена') {
+        await sendResult(candidate, false)
+      }
       res.json({
         message: "Дані оновлено"
       })

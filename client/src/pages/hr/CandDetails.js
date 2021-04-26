@@ -28,7 +28,7 @@ const useStyles = makeStyles({
 export default function CandDetails() {
   const classes = useStyles();
   const [candidate, setCandidate] = useState({});
-  const [candData, setCandData] = useState({
+  const [newCandData, setNewCandData] = useState({
     status: '',
     interviewDate: ''
   });
@@ -42,14 +42,14 @@ export default function CandDetails() {
   }, []);
   
   const changeHandler = event => {
-    setCandData({
-      ...candData,
+    setNewCandData({
+      ...newCandData,
       [event.target.name]: event.target.value
     })
   }
   
   function buttonHandler() {
-    axios.patch(`http://localhost:5000/cand/edit/${id}`, candData)
+    axios.patch(`http://localhost:5000/cand/edit/${id}`, {newCandData, candidate})
       .then(resp => {
         alert(resp.data.message)
         window.location = '/candidates';
@@ -97,6 +97,7 @@ export default function CandDetails() {
       </Typography>
       <TextField
         select
+        defaultValue={''}
         size='small'
         fullWidth
         label="Статус"

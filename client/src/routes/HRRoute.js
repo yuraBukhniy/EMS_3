@@ -9,6 +9,7 @@ import NewCandidate from "../pages/hr/NewCandidate"
 import ProjectDetails from "../pages/project/ProjectDetails";
 import LeaveRoutes from "./functional/LeaveRoutes";
 import UserPage from "../pages/EmployeeDetails";
+import Payment from "../pages/payment/Payment";
 
 export default function HRRoutes() {
   return (
@@ -21,7 +22,7 @@ export default function HRRoutes() {
       <Route exact path="/candidates/new" component={NewCandidate} />
       <Route exact path="/candidates/:id" component={CandidateDetails} />
       <Route exact path="/employees" component={EmployeesPage} />
-  
+      <Route exact path='/payment' component={Payment} />
       <Route exact path="/user" component={UserPage} />
       <LeaveRoutes role='HR' />
       <Redirect to='/' />

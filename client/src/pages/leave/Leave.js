@@ -14,6 +14,7 @@ import {Link} from "react-router-dom";
 import {ButtonGroup} from "@material-ui/core";
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import ThumbUDownAltIcon from '@material-ui/icons/ThumbDownAlt';
+import ListAltIcon from "@material-ui/icons/ListAlt";
 
 const useStyles = makeStyles({
   root: {
@@ -89,15 +90,8 @@ export default function LeaveMgmtPage({role}) {
       })
   }
   
-  function generateReport(id, data) {
-    axios.patch(`http://localhost:5000/leave/status/${id}`, data)
-      .then(res => {
-        console.log(res.data)
-      })
-  }
-  
   const headers1 = ["Ім'я працівника", "Тип відпустки", "Початок", "Кінець", "Статус", "Дії"]
-  const headers2 = ["Тип відпустки", "Початок", "Кінець", "Статус"]
+  const headers2 = ["Тип відпустки", "Початок", "Кінець", "Статус", "Деталі"]
   
   return (
     <div>
@@ -132,15 +126,15 @@ export default function LeaveMgmtPage({role}) {
                   <StyledTableCell>{row.status}</StyledTableCell>
                   <StyledTableCell>
                     <ButtonGroup size="small" aria-label="small outlined button group">
+                      <Button onClick={() => viewDetailsHandler(row._id)}>
+                        <ListAltIcon />
+                      </Button>
                       <Button onClick={() => setStatus(row._id, 'Прийнято')}>
                         <ThumbUpAltIcon />
                       </Button>
                       <Button onClick={() => setStatus(row._id, 'Відхилено')}>
                         <ThumbUDownAltIcon />
                       </Button>
-                      {/*<Button onClick={() => setStatus(row._id, 'Прийнято')}>*/}
-                      {/*  <ThumbUpAltIcon />*/}
-                      {/*</Button>*/}
                     </ButtonGroup>
                   </StyledTableCell>
                 </StyledTableRow>
@@ -169,6 +163,11 @@ export default function LeaveMgmtPage({role}) {
                 <StyledTableCell>{convertDate(row.startDate)}</StyledTableCell>
                 <StyledTableCell>{convertDate(row.endDate)}</StyledTableCell>
                 <StyledTableCell>{row.status}</StyledTableCell>
+                <StyledTableCell>
+                  <Button onClick={() => viewDetailsHandler(row._id)}>
+                    <ListAltIcon />
+                  </Button>
+                </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

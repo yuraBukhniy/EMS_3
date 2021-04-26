@@ -15,6 +15,7 @@ import EmployeeDetails from "../pages/EmployeeDetails";
 import LeaveMgmtPage from "../pages/leave/Leave";
 import NewLeave from "../pages/leave/NewLeave";
 import LeaveDetails from "../pages/leave/LeaveDetails";
+import Payment from "../pages/payment/Payment";
 
 export default function ManagerRoute() {
   return (
@@ -36,7 +37,10 @@ export default function ManagerRoute() {
         <LeaveMgmtPage role='teamLead' />}
       />
       <Route exact path='/leave/new' component={NewLeave} />
-      <Route exact path='/leave/:id' component={LeaveDetails} />
+      <Route exact path='/leave/:id' render={() =>
+        <LeaveDetails lead={true} />}
+      />
+      <Route exact path='/payment' component={Payment} />
       
       {/*<Route exact path="/employees" component={Employees} />*/}
       {/*<Route exact path="/employees/:id" component={EmployeeDetails} />*/}

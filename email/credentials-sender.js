@@ -10,9 +10,9 @@ module.exports = async function ({ firstName, lastName, username, password, emai
     },
   })
   await transporter.sendMail({
-    from: '"EMS Administration" <yuriibuhn@gmail.com>', // sender address
-    to: email, // list of receivers
-    subject: "Реєстрація нового користувача", // Subject line
+    from: `"EMS Administration" <${config.get('emailUser')}>`,
+    to: email,
+    subject: "Реєстрація нового користувача",
     html: `
         <h3>Привіт, ${firstName} ${lastName}!</h3>
         <p>Ваші дані для входу в систему:</p>
@@ -20,6 +20,6 @@ module.exports = async function ({ firstName, lastName, username, password, emai
           <li>Ім'я користувача: ${username}</li>
           <li>Пароль: ${password}</li>
         </ul>
-      `, // html body
+      `,
   });
 }

@@ -5,7 +5,7 @@ import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import WorkOutlineIcon from '@material-ui/icons/WorkOutline';
 import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
 import CalendarTodayIcon from "@material-ui/icons/CalendarToday";
-//import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import SettingsIcon from '@material-ui/icons/Settings';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 
@@ -27,6 +27,11 @@ function getSidebarData(role) {
       link: "/employees"
     },
     {
+      title: "Зарплата",
+      icon: <MonetizationOnIcon/>,
+      link: "/payment"
+    },
+    {
       title: "Мій профіль",
       icon: <PersonOutlineIcon/>,
       link: "/user"
@@ -42,6 +47,11 @@ function getSidebarData(role) {
       title: "Відпустки",
       icon: <CalendarTodayIcon/>,
       link: "/leave"
+    },
+    {
+      title: "Зарплата",
+      icon: <MonetizationOnIcon/>,
+      link: "/payment"
     },
     {
       title: "Тех. підтримка",
@@ -69,6 +79,11 @@ function getSidebarData(role) {
       title: "Відпустки",
       icon: <CalendarTodayIcon/>,
       link: "/leave"
+    },
+    {
+      title: "Зарплата",
+      icon: <MonetizationOnIcon/>,
+      link: "/payment"
     },
     {
       title: "Тех. підтримка",
@@ -102,6 +117,11 @@ function getSidebarData(role) {
       link: "/leave"
     },
     {
+      title: "Зарплата",
+      icon: <MonetizationOnIcon/>,
+      link: "/payment"
+    },
+    {
       title: "Тех. підтримка",
       icon: <SettingsIcon/>,
       link: "/service"
@@ -127,6 +147,11 @@ function getSidebarData(role) {
       title: "Тех. підтримка",
       icon: <SettingsIcon/>,
       link: "/service"
+    },
+    {
+      title: "Зарплата",
+      icon: <MonetizationOnIcon/>,
+      link: "/payment"
     },
     {
       title: "Мій профіль",

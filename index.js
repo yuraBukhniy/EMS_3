@@ -8,6 +8,7 @@ const projectRoutes = require('./routes/project.route');
 const taskRoutes = require('./routes/task.routes');
 const serviceRoutes = require('./routes/service.routes');
 const leaveRoutes = require('./routes/leave.route');
+const paymentRoutes = require('./routes/payment.route');
 const cors = require('cors');
 
 const app = express();
@@ -21,6 +22,7 @@ app.use('/project', projectRoutes);
 app.use('/task', taskRoutes);
 app.use('/service', serviceRoutes);
 app.use('/leave', leaveRoutes);
+app.use('/payment', paymentRoutes);
 
 const PORT = config.get('port');
 const URI = config.get('mongoUri');
