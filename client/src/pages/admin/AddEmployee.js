@@ -10,6 +10,7 @@ import Select from "@material-ui/core/Select";
 import NativeSelect from '@material-ui/core/NativeSelect';
 import axios from "axios";
 import {FormControl} from "@material-ui/core";
+import {Alert} from '@material-ui/lab'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,6 +37,12 @@ const useStyles = makeStyles((theme) => ({
   cancel: {
     margin: theme.spacing(3, 0, 2),
     marginLeft: 10
+  },
+  hideAlert: {
+    display: 'none'
+  },
+  showAlert: {
+    display: 'flex'
   }
 }));
 
@@ -57,6 +64,11 @@ export default function () {
   const [project, setProject] = useState('');
   const [projects, setProjects] = useState([]);
   const [leads, setLeads] = useState([]);
+  const [alert, setAlert] = useState({
+    show: false,
+    severity: 'success',
+    message: ''
+  })
   
   useEffect(() => {
     axios.get('http://localhost:5000/project/get/names')
@@ -88,8 +100,12 @@ export default function () {
   const buttonHandler = async () => {
     axios.post('http://localhost:5000/auth/register', {...form, project})
       .then(resp => {
-        alert(resp.data.message)
-        window.location = '/employees';
+        setAlert({
+          show: true,
+          severity: 'success',
+          message: resp.data.message
+        })
+        //window.location = '/employees';
       })
   };
   
@@ -256,6 +272,14 @@ export default function () {
                 label="Зарплата"
                 onChange={changeHandler}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Alert
+                severity={alert.severity}
+                className={alert.show ? classes.showAlert : classes.hideAlert}
+              >
+                {alert.message}
+              </Alert>
             </Grid>
           </Grid>
           <Button

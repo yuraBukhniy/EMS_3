@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import axios from "axios";
 import MenuItem from "@material-ui/core/MenuItem";
+import {Alert} from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -29,6 +30,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
     marginLeft: 10
   },
+  hideAlert: {
+    display: 'none'
+  },
+  showAlert: {
+    display: 'flex'
+  }
 }));
 
 export default function NewCandidate() {
@@ -43,6 +50,11 @@ export default function NewCandidate() {
     interviewer: ''
   });
   const [projects, setProjects] = useState([]);
+  const [alert, setAlert] = useState({
+    show: false,
+    severity: 'success',
+    message: ''
+  })
   
   useEffect(() => {
     axios.get('http://localhost:5000/project/get/names')
@@ -65,8 +77,12 @@ export default function NewCandidate() {
   const buttonHandler = async () => {
     axios.post('http://localhost:5000/cand/add', form)
       .then(resp => {
-        alert(resp.data.message)
-        window.location = '/candidates'
+        setAlert({
+          show: true,
+          severity: 'success',
+          message: resp.data.message
+        })
+        //window.location = '/candidates'
       })
   }
   
@@ -99,7 +115,7 @@ export default function NewCandidate() {
                 onChange={changeHandler}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={8}>
               <TextField
                 variant="outlined"
                 size='small'
@@ -109,7 +125,7 @@ export default function NewCandidate() {
                 onChange={changeHandler}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 variant="outlined"
                 size='small'
@@ -129,7 +145,7 @@ export default function NewCandidate() {
                 onChange={changeHandler}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 select
                 variant="outlined"
@@ -155,15 +171,13 @@ export default function NewCandidate() {
                 onChange={changeHandler}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                size='small'
-                fullWidth
-                label="Проведе співбесіду"
-                name="interviewer"
-                onChange={changeHandler}
-              />
+            <Grid item xs={12}>
+              <Alert
+                severity={alert.severity}
+                className={alert.show ? classes.showAlert : classes.hideAlert}
+              >
+                {alert.message}
+              </Alert>
             </Grid>
           </Grid>
           <Button

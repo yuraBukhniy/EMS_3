@@ -41,6 +41,16 @@ const viewDetailsHandler = (id) => {
   window.location = `/project/${id}`
 }
 
+const getOverallAmount = obj => {
+  let sum = 0
+  if(typeof obj === 'object') {
+    for(let item in obj) {
+      sum += obj[item].amount
+    }
+  }
+  return sum
+}
+
 export default function Projects({role}) {
   const classes = useStyles();
   const [projects, setProjects] = useState([]);
@@ -78,30 +88,54 @@ export default function Projects({role}) {
                   На проєкт потрібно найняти:
                 </Typography>
                 <Grid container>
-                  <Grid item xs={3}>
-                    Менеджерів
-                    <Typography variant="h5">
-                      {project.estimate.managers}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    Керівників команди
-                    <Typography variant="h5">
-                      {project.estimate.leads}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    Розробників
-                    <Typography variant="h5">
-                      {project.estimate.devs}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={3}>
-                    Тестувальників
-                    <Typography variant="h5">
-                      {project.estimate.testers}
-                    </Typography>
-                  </Grid>
+                  {project.estimate.managers ?
+                    <Grid item xs={3}>
+                      Менеджерів
+                      <Typography variant="h5">
+                        {project.estimate.managers.amount}
+                      </Typography>
+                    </Grid>
+                  : null}
+                  {project.estimate.leads ?
+                    <Grid item xs={3}>
+                      Керівників команди
+                      <Typography variant="h5">
+                        {project.estimate.leads.amount}
+                      </Typography>
+                    </Grid>
+                  : null}
+                  {project.estimate.devs ?
+                    <Grid item xs={3}>
+                      Розробників
+                      <Typography variant="h5">
+                        {getOverallAmount(project.estimate.devs)}
+                      </Typography>
+                    </Grid>
+                  : null}
+                  {project.estimate.testers ?
+                    <Grid item xs={3}>
+                      Тестувальників
+                      <Typography variant="h5">
+                        {getOverallAmount(project.estimate.testers)}
+                      </Typography>
+                    </Grid>
+                  : null}
+                  {project.estimate.analysts ?
+                    <Grid item xs={3}>
+                      Аналітиків
+                      <Typography variant="h5">
+                        {project.estimate.analysts.amount}
+                      </Typography>
+                    </Grid>
+                    : null}
+                  {project.estimate.designers ?
+                    <Grid item xs={3}>
+                      Дизайнерів
+                      <Typography variant="h5">
+                        {project.estimate.designers.amount}
+                      </Typography>
+                    </Grid>
+                    : null}
                 </Grid>
               </> : null}
             

@@ -1,11 +1,8 @@
 import React from 'react';
 import {Switch, Route, Redirect} from "react-router-dom";
-//import Projects from "../pages/project/Projects";
 import EditProject from "../pages/project/EditProject";
 import ProjectDetails from "../pages/project/ProjectDetails";
-//import Employees from "../pages/admin/Employees";
-//import AddEmployee from "../pages/admin/AddEmployee";
-//import EmployeeDetails from "../pages/admin/EmployeeDetails";
+import Estimate from "../pages/project/Estimate";
 import ServiceRoutes from "./functional/ServiceRoutes";
 import Tasks from "../pages/tasks/Tasks";
 import NewTask from "../pages/tasks/NewTask";
@@ -21,6 +18,7 @@ export default function ManagerRoute() {
   return (
     <Switch>
       <Route exact path="/" render={() => <ProjectDetails role='manager' />} />
+      <Route exact path="/project/estimate/:id" component={Estimate} />
       <Route exact path="/user" component={EmployeeDetails} />
       
       <Route exact path="/team" render={() => <Team manager={true} />} />

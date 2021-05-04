@@ -33,30 +33,42 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ProjectDetails({role, id}) {
+const getOverallAmount = obj => {
+  let sum = 0
+  for(let item in obj) {
+    sum += obj[item].amount
+  }
+  return sum
+}
+
+export default function ProjectDetails({role}) {
   const classes = useStyles();
-  const [project, setProject] = useState({});
-  const [projectData, setProjectData] = useState({
-    // code: '',
-    // name: '',
-    // description: '',
-    managers: project.estimate ? project.estimate.managers : 0,
-    leads: project.estimate ? project.estimate.leads : 0,
-    devs: project.estimate ? project.estimate.devs : 0,
-    testers: project.estimate ? project.estimate.testers : 0
+  const [project, setProject] = useState({
+    // estimate: {
+    //   managers: 0,
+    //   leads: 0,
+    //   devs: {},
+    //   testers: {},
+    //   analysts: 0,
+    //   designers: 0
+    // }
   });
+  // const [projectData, setProjectData] = useState({
+  //   managers: project.estimate ? project.estimate.managers : 0,
+  //   leads: project.estimate ? project.estimate.leads : 0,
+  //   devs: project.estimate ? project.estimate.devs : 0,
+  //   testers: project.estimate ? project.estimate.testers : 0
+  // });
   const [employees, setEmployees] = useState([])
+  
   const projectIdParams = useParams().id;
   const projectId = role === 'manager' ? JSON.parse(localStorage.getItem('user')).project : projectIdParams;
-  //const projectCode =null;
-  
-  // const url = role === 'manager' ? `http://localhost:5000/project/code/${projectCode}`
-  //   : `http://localhost:5000/project/get/${id}`
   
   useEffect(() => {
     axios.get(`http://localhost:5000/project/get/${projectId}`)
       .then(res => {
         setProject(res.data)
+        //console.log(project.estimate)
       })
     axios.get(`http://localhost:5000/employees/project/${projectId}`)
       .then(res => {
@@ -64,20 +76,20 @@ export default function ProjectDetails({role, id}) {
       })
   }, []);
   
-  const changeHandler = event => {
-    setProjectData({
-      ...projectData,
-      [event.target.name]: event.target.value
-    })
-  }
-  
-  const buttonHandler = async (id) => {
-    axios.patch(`http://localhost:5000/project/setestimate/${id}`, projectData)
-      .then(resp => {
-        alert(resp.data.message)
-        window.location = '/'
-      })
-  }
+  // const changeHandler = event => {
+  //   setProjectData({
+  //     ...projectData,
+  //     [event.target.name]: event.target.value
+  //   })
+  // }
+  //
+  // const buttonHandler = async (id) => {
+  //   axios.patch(`http://localhost:5000/project/setestimate/${id}`, projectData)
+  //     .then(resp => {
+  //       alert(resp.data.message)
+  //       window.location = '/'
+  //     })
+  // }
   
   return (
     <>
@@ -112,10 +124,32 @@ export default function ProjectDetails({role, id}) {
                 </Typography>
                 <Typography className={classes.marginUp} variant='h6'>
                   <ul>
-                    <li>Менеджерів: {project.estimate.managers}</li>
-                    <li>Керівників команди: {project.estimate.leads}</li>
-                    <li>Розробників: {project.estimate.devs}</li>
-                    <li>Тестувальників: {project.estimate.testers}</li>
+                    {project.estimate.managers ? <li>Менеджерів: {project.estimate.managers.amount} ({project.estimate.managers.salary} $)</li> : null}
+                    {project.estimate.leads ? <li>Керівників команди: {project.estimate.leads.amount} ({project.estimate.leads.salary} $)</li> : null}
+                    {project.estimate.devs ? (
+                      <>
+                        <li>Розробників: {getOverallAmount(project.estimate.devs)}, в тому числі:</li>
+                        <ul>
+                          {project.estimate.devs.trainee ? <li>Trainee: {project.estimate.devs.trainee.amount} ({project.estimate.devs.trainee.salary} $)</li> : null}
+                          {project.estimate.devs.junior ? <li>Junior: {project.estimate.devs.junior.amount} ({project.estimate.devs.junior.salary} $)</li> : null}
+                          {project.estimate.devs.middle ? <li>Middle: {project.estimate.devs.middle.amount} ({project.estimate.devs.middle.salary} $)</li> : null}
+                          {project.estimate.devs.senior ? <li>Senior: {project.estimate.devs.senior.amount} ({project.estimate.devs.senior.salary} $)</li> : null}
+                        </ul>
+                      </>
+                    ) : null}
+                    {project.estimate.testers ? (
+                      <>
+                        <li>Тестувальників: {getOverallAmount(project.estimate.testers)}, в тому числі:</li>
+                        <ul>
+                          {project.estimate.testers.trainee ? <li>Trainee: {project.estimate.testers.trainee.amount} ({project.estimate.testers.trainee.salary} $)</li> : null}
+                          {project.estimate.testers.junior ? <li>Junior: {project.estimate.testers.junior.amount} ({project.estimate.testers.junior.salary} $)</li> : null}
+                          {project.estimate.testers.middle ? <li>Middle: {project.estimate.testers.middle.amount} ({project.estimate.testers.middle.salary} $)</li> : null}
+                          {project.estimate.testers.senior ? <li>Senior: {project.estimate.testers.senior.amount} ({project.estimate.testers.senior.salary} $)</li> : null}
+                        </ul>
+                      </>
+                    ) : null}
+                    {project.estimate.analysts ? <li>Аналітиків: {project.estimate.analysts.amount} ({project.estimate.analysts.salary} $)</li> : null}
+                    {project.estimate.designers ? <li>Дизайнерів: {project.estimate.designers.amount} ({project.estimate.designers.salary} $)</li> : null}
                   </ul>
                 </Typography>
               </>
@@ -123,57 +157,66 @@ export default function ProjectDetails({role, id}) {
           </Grid>
       
           {role === 'manager' ?
+            
             <Grid item xs={12}>
-              <Typography className={classes.marginUp} variant='h5'>
-                Введіть кількість працівників, потрібних для проєкту
-              </Typography>
-              <Grid item xs={6}>
-                <TextField
-                  size='small'
-                  fullWidth
-                  label="Менеджери"
-                  name="managers"
-                  onChange={changeHandler}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  size='small'
-                  fullWidth
-                  label="Керівники команди"
-                  name="leads"
-                  onChange={changeHandler}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  size='small'
-                  fullWidth
-                  label="Розробники"
-                  name="devs"
-                  onChange={changeHandler}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  size='small'
-                  fullWidth
-                  label="Тестувальники"
-                  name="testers"
-                  onChange={changeHandler}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Button
-                  type="button"
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  onClick={() => buttonHandler(projectId)}
-                >
-                  Зберегти
-                </Button>
-              </Grid>
+              <Button
+                variant="contained"
+                href={`/project/estimate/${projectId}`}
+                className={classes.marginUp}
+              >
+                Керування структурою персоналу
+              </Button>
+              
+              {/*<Typography className={classes.marginUp} variant='h5'>*/}
+              {/*  Введіть кількість працівників, потрібних для проєкту*/}
+              {/*</Typography>*/}
+              {/*<Grid item xs={6}>*/}
+              {/*  <TextField*/}
+              {/*    size='small'*/}
+              {/*    fullWidth*/}
+              {/*    label="Менеджери"*/}
+              {/*    name="managers"*/}
+              {/*    onChange={changeHandler}*/}
+              {/*  />*/}
+              {/*</Grid>*/}
+              {/*<Grid item xs={6}>*/}
+              {/*  <TextField*/}
+              {/*    size='small'*/}
+              {/*    fullWidth*/}
+              {/*    label="Керівники команди"*/}
+              {/*    name="leads"*/}
+              {/*    onChange={changeHandler}*/}
+              {/*  />*/}
+              {/*</Grid>*/}
+              {/*<Grid item xs={6}>*/}
+              {/*  <TextField*/}
+              {/*    size='small'*/}
+              {/*    fullWidth*/}
+              {/*    label="Розробники"*/}
+              {/*    name="devs"*/}
+              {/*    onChange={changeHandler}*/}
+              {/*  />*/}
+              {/*</Grid>*/}
+              {/*<Grid item xs={6}>*/}
+              {/*  <TextField*/}
+              {/*    size='small'*/}
+              {/*    fullWidth*/}
+              {/*    label="Тестувальники"*/}
+              {/*    name="testers"*/}
+              {/*    onChange={changeHandler}*/}
+              {/*  />*/}
+              {/*</Grid>*/}
+              {/*<Grid item xs={6}>*/}
+              {/*  <Button*/}
+              {/*    type="button"*/}
+              {/*    variant="contained"*/}
+              {/*    color="primary"*/}
+              {/*    className={classes.submit}*/}
+              {/*    onClick={() => buttonHandler(projectId)}*/}
+              {/*  >*/}
+              {/*    Зберегти*/}
+              {/*  </Button>*/}
+              {/*</Grid>*/}
             </Grid> : null}
         </Grid>
         

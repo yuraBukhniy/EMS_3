@@ -127,7 +127,7 @@ export default function CandidatesPage() {
     })
   }
   
-  const headers = ["Ім'я", "Прізвище", "Позиція", "Проєкт", "Дата співбесіди", "Проведе співбесіду", "Статус", "Дії"]
+  const headers = ["Ім'я", "Прізвище", "Позиція", "Проєкт", "Дата співбесіди", "Статус", "Дії"] //, "Проведе співбесіду"
   const seniorities = ['Trainee', 'Junior', 'Middle', 'Senior', 'Lead', 'Project Manager']
   const roles = ['admin', 'HR', 'employee', 'teamLead', 'manager']
   
@@ -163,7 +163,7 @@ export default function CandidatesPage() {
                 <StyledTableCell>{row.position}</StyledTableCell>
                 <StyledTableCell>{row.project.name ? row.project.name : null}</StyledTableCell>
                 <StyledTableCell>{convertDate(row.interviewDate, true)}</StyledTableCell>
-                <StyledTableCell>{row.interviewer}</StyledTableCell>
+                {/*<StyledTableCell>{row.interviewer}</StyledTableCell>*/}
                 <StyledTableCell><i>{row.status}</i></StyledTableCell>
                 <StyledTableCell>
                   <ButtonGroup size="small" aria-label="small outlined button group">

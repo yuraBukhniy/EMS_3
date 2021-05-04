@@ -87,6 +87,9 @@ export default function LeaveDetails({lead}) {
           Дата закінчення: {convertDate(leave.endDate)}
         </Typography>
         <Typography>
+          Тип: {leave.type}
+        </Typography>
+        <Typography>
           Тривалість: {leave.days} {leave.days === 1 ? 'робочий день' : leave.days < 5 ? 'робочих дні' : 'робочих днів'}
         </Typography>
         <Typography>

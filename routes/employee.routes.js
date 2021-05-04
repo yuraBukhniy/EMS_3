@@ -84,4 +84,19 @@ router.get('/:id', async (req, res) => {
   }
 })
 
+router.get('/costs/:id', async (req, res) => {
+  try {
+    const project = req.params.id;
+    const employees = await User.find({project}, {salary: 1, _id: 0})
+    let sum = 0
+    employees.forEach(empl => {
+      sum += empl.salary
+    })
+    res.json(sum)
+  } catch(err) {
+    console.error(err.message)
+    res.status(500).send(err)
+  }
+})
+
 module.exports = router;

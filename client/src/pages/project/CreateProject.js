@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import axios from "axios";
+import {Alert} from "@material-ui/lab";
 import {Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -24,6 +25,12 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  hideAlert: {
+    display: 'none'
+  },
+  showAlert: {
+    display: 'flex'
+  }
 }));
 
 export default function CreateProject() {
@@ -31,21 +38,12 @@ export default function CreateProject() {
     code: '',
     name: '',
     description: '',
-    // managers: 0,
-    // leads: 0,
-    // devs: 0,
-    // testers: 0
   });
-  // const [structure, setStructure] = useState({
-  //   managers: false,
-  //   leads: false,
-  //   devs: false,
-  //   testers: false,
-  //   designers: false,
-  //   analysts: false,
-  //   recruiters: false,
-  //   specialists: false
-  // });
+  const [alert, setAlert] = useState({
+    show: false,
+    severity: 'success',
+    message: ''
+  })
   
   const changeHandler = event => {
     setProjectData({
@@ -57,14 +55,14 @@ export default function CreateProject() {
   const buttonHandler = async () => {
     axios.post('http://localhost:5000/project/create', projectData)
       .then(resp => {
-        alert(resp.data.message)
-        window.location = '/'
+        setAlert({
+          show: true,
+          severity: 'success',
+          message: resp.data.message
+        })
+        //window.location = '/'
       })
   }
-  
-  // function handleChange(event) {
-  //   setStructure({ ...structure, [event.target.name]: event.target.checked });
-  // }
   
   const classes = useStyles();
   
@@ -105,47 +103,14 @@ export default function CreateProject() {
                 onChange={changeHandler}
               />
             </Grid>
-  
-            {/*<Grid item xs={12}>*/}
-            {/*  Визначіть структуру персоналу проекту*/}
-            {/*  <FormControl component="fieldset" className={classes.formControl}>*/}
-            {/*    <FormGroup>*/}
-            {/*      <FormControlLabel*/}
-            {/*        control={<Checkbox onChange={handleChange} name="managers" />}*/}
-            {/*        label="Gilad Gray"*/}
-            {/*      />*/}
-            {/*      <FormControlLabel*/}
-            {/*        control={<Checkbox onChange={handleChange} name="leads" />}*/}
-            {/*        label="Jason Killian"*/}
-            {/*      />*/}
-            {/*      <FormControlLabel*/}
-            {/*        control={<Checkbox onChange={handleChange} name="devs" />}*/}
-            {/*        label="Antoine Llorca"*/}
-            {/*      />*/}
-            {/*      <FormControlLabel*/}
-            {/*        control={<Checkbox onChange={handleChange} name="testers" />}*/}
-            {/*        label="Gilad Gray"*/}
-            {/*      />*/}
-            {/*      <FormControlLabel*/}
-            {/*        control={<Checkbox onChange={handleChange} name="designers" />}*/}
-            {/*        label="Jason Killian"*/}
-            {/*      />*/}
-            {/*      <FormControlLabel*/}
-            {/*        control={<Checkbox onChange={handleChange} name="analysts" />}*/}
-            {/*        label="Antoine Llorca"*/}
-            {/*      />*/}
-            {/*      <FormControlLabel*/}
-            {/*        control={<Checkbox onChange={handleChange} name="recruiters" />}*/}
-            {/*        label="Jason Killian"*/}
-            {/*      />*/}
-            {/*      <FormControlLabel*/}
-            {/*        control={<Checkbox onChange={handleChange} name="specialists" />}*/}
-            {/*        label="Antoine Llorca"*/}
-            {/*      />*/}
-            {/*    </FormGroup>*/}
-            {/*  </FormControl>*/}
-            {/*</Grid>*/}
-            
+            <Grid item xs={12}>
+              <Alert
+                severity={alert.severity}
+                className={alert.show ? classes.showAlert : classes.hideAlert}
+              >
+                {alert.message}
+              </Alert>
+            </Grid>
           </Grid>
           <Button
             type="button"

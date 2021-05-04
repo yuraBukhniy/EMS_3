@@ -5,13 +5,8 @@ const schema = new Schema({
   name: String,
   startDate: { type: Date, default: new Date() },
   description: String,
-  //employees: [String],
-  estimate: {
-    managers: Number,
-    leads: Number,
-    devs: Number,
-    testers: Number
-  }
+  budget: {type: Number, default: 0},
+  estimate: Object
 })
 
 module.exports = model('projects', schema);

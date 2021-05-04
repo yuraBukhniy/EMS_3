@@ -1,6 +1,7 @@
 const {Router} = require('express');
 const Candidate = require('../database/candidateModel');
 const User = require('../database/userModel');
+const Project = require('../database/Project');
 const bcrypt = require('bcryptjs');
 const sendCredentials = require('../email/credentials-sender')
 const sendResult = require('../email/result-sender')
@@ -105,13 +106,36 @@ router.post('/createuser', async (req, res) => {
     });
     await newUser.save();
     await sendCredentials({firstName, lastName, email, username, password})
+    
+    let estimateField;
+    switch(position) {
+      case 'Project Manager': estimateField = 'managers'; break;
+      case 'Software Engineer': estimateField = 'devs'; break;
+      case 'Test Engineer': estimateField = 'testers'; break;
+      case 'Analyst': estimateField = 'analysts'; break;
+      case 'Designer': estimateField = 'designers'; break;
+    }
+    if(seniority === 'Lead') estimateField = 'leads';
   
+    const projectData = await Project.findById(project)
+    const newEstimateData = projectData.estimate[estimateField]
+    if(estimateField === 'devs' || estimateField === 'testers') {
+      const seniorityField = seniority.toLowerCase()
+      if(newEstimateData[seniorityField] && newEstimateData[seniorityField].amount !== 0)
+        newEstimateData[seniorityField].amount -= 1
+    } else if(newEstimateData && newEstimateData.amount !== 0) newEstimateData.amount -= 1
+  
+    await Project.findByIdAndUpdate(project, {
+      estimate: {
+        ...projectData.estimate,
+        [estimateField]: newEstimateData
+      }
+    })
+    
     res.status(201).json({
       message: 'Працівник доданий в систему',
       body: req.body
     })
-    
-    //res.json(candidate)
   } catch (err) {
     console.error(err.message)
     res.status(500).send(err)
@@ -120,7 +144,6 @@ router.post('/createuser', async (req, res) => {
 
 router.delete('/delete/:id', async (req, res) => {
   try {
-    //Candidate.deleteOne(req.params.id)
     Candidate.deleteOne({_id: req.params.id}, (err) => {
       err ? res.status(500).json(err) : res.json('Candidate deleted')
     })

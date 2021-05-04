@@ -6,11 +6,6 @@ const router = Router();
 
 router.post('/create', async (req, res) => {
   try {
-    // const { code, name, description, managers, leads, devs, testers } = req.body;
-    // const estimate = {managers, leads, devs, testers};
-    // const newProject = new Project({
-    //   code, name, description, estimate
-    // });
     const data = req.body;
     const newProject = new Project(data)
     await newProject.save();
@@ -23,12 +18,63 @@ router.post('/create', async (req, res) => {
   }
 });
 
+const findSum = object => {
+  if(Object.keys(object).length) return object.salary * object.amount;
+  else return 0
+}
+const setDataToUpdate = data => {
+  let dataToUpdate = {}
+  for(let item in data) {
+    if(Object.keys(data[item]).length) dataToUpdate[item] = data[item]
+  }
+  return dataToUpdate
+}
 router.patch('/setestimate/:id', async (req, res) => {
   try {
-    const data = req.body;
-    await Project.findByIdAndUpdate(req.params.id, {estimate: data})
+    const {costs, currentBudget, newBudget, managers, leads, devs, testers, designers, analysts} = req.body
+    
+    let devSum = 0
+    for(let item in devs) {
+      devSum += findSum(devs[item])
+    }
+    let testerSum = 0
+    for(let item in testers) {
+      testerSum += findSum(testers[item])
+    }
+    const sum = findSum(managers) + findSum(leads) + findSum(designers) + findSum(analysts) + devSum + testerSum
+    const budget = newBudget ? newBudget : currentBudget
+    
+    console.log({sum, budget, costs})
+    if(sum > budget - costs) {
+      return res.status(201).json({
+        message: `Витрати на персонал не можуть бути більшими за бюджет. Перевищення на ${sum + costs - budget} $`
+      })
+    }
+    const estimate = setDataToUpdate({managers, leads, devs, testers, designers, analysts})
+    if(Object.keys(estimate).length) {
+      const project = await Project.findById(req.params.id)
+      const oldEstimate = project.estimate
+      const finalEstimate = {
+        ...oldEstimate,
+        ...estimate,
+        devs: {
+          ...oldEstimate.devs,
+          ...estimate.devs
+        },
+        testers: {
+          ...oldEstimate.testers,
+          ...estimate.testers
+        }
+      }
+      //console.log(finalEstimate)
+      await Project.findByIdAndUpdate(req.params.id, {
+        budget,
+        estimate: finalEstimate
+        //   : {managers, leads, devs, testers, designers, analysts}
+      })
+    } else await Project.findByIdAndUpdate(req.params.id, { budget })
     res.status(201).json({
-      message: 'Оновлено'
+      message: 'Дані оновлено'
     })
   } catch (err) {
     console.error(err.message)

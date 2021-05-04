@@ -21,11 +21,11 @@ function getSidebarData(role) {
       icon: <PeopleOutlineIcon/>,
       link: "/candidates"
     },
-    {
-      title: "Працівники",
-      icon: <WorkOutlineIcon/>,
-      link: "/employees"
-    },
+    // {
+    //   title: "Працівники",
+    //   icon: <WorkOutlineIcon/>,
+    //   link: "/employees"
+    // },
     {
       title: "Зарплата",
       icon: <MonetizationOnIcon/>,
