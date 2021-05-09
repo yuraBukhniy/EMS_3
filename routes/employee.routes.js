@@ -1,14 +1,11 @@
 const {Router} = require('express');
 const User = require('../database/userModel');
-const Leave = require('../database/Leave')
-const {Types} = require('mongoose')
 
 const router = Router();
 
 router.get('/', async (req, res) => {
   try {
     const employees = await User.find()
-      //.where('project').not('')
       .populate({path: 'project', select: ['code', 'name']});
     
     res.json(employees)

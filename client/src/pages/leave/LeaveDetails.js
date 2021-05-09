@@ -36,8 +36,6 @@ const useStyles = makeStyles((theme) => ({
 export default function LeaveDetails({lead}) {
   const classes = useStyles();
   const [leave, setLeave] = useState({});
-  //const [status, setStatus] = useState('');
-  // const leadUsername = JSON.parse(localStorage.getItem('user')).username;
   const leaveId = useParams().id;
   
   useEffect(() => {
@@ -52,7 +50,6 @@ export default function LeaveDetails({lead}) {
       .then(res => {
         console.log(res.data)
       })
-    //window.location = '/service';
   }
   
   function rejectHandler() {
@@ -60,7 +57,6 @@ export default function LeaveDetails({lead}) {
       .then(res => {
         console.log(res.data)
       })
-    //window.location = '/service';
   }
   
   function generateReport() {
@@ -125,13 +121,7 @@ export default function LeaveDetails({lead}) {
         <Typography variant='h6'>
           {leave.description}
         </Typography>
-        {/*<Typography className={classes.marginUp} variant='h5'>*/}
-        {/*  Відповідь*/}
-        {/*</Typography>*/}
-        {/*<Divider />*/}
-        {/*<Typography className={classes.marginDown} color="h6">*/}
-        {/*  {leave.reply || 'Немає відповіді'}*/}
-        {/*</Typography>*/}
+        
         {lead && leave.status === 'Очікує підтвердження' ?
           <>
             <Button

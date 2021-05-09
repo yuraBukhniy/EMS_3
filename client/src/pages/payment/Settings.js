@@ -45,9 +45,11 @@ export default function ({open, onClose}) {
   })
   
   const changeHandler = event => {
+    let value = event.target.value;
+    if(event.target.name !== 'date') value = +value;
     setData({
       ...data,
-      [event.target.name]: event.target.value
+      [event.target.name]: value
     })
   }
   
@@ -64,7 +66,7 @@ export default function ({open, onClose}) {
         setAlert({
           show: true,
           severity: 'error',
-          message: 'Неправильний пароль'
+          message: 'Помилка'
         })
       })
   }
@@ -82,7 +84,7 @@ export default function ({open, onClose}) {
                 fullWidth
                 label="Дата нарахування"
                 name="date"
-                type="datetime-local"
+                type="date"
                 onChange={changeHandler}
               />
             </Grid>
@@ -93,7 +95,6 @@ export default function ({open, onClose}) {
                 fullWidth
                 label="Єдиний податок (у %)"
                 name="singleTax"
-                //type="password"
                 onChange={changeHandler}
               />
             </Grid>
@@ -104,7 +105,6 @@ export default function ({open, onClose}) {
                 fullWidth
                 label="Єдиний соц. внесок"
                 name="contribTax"
-                //type="password"
                 onChange={changeHandler}
               />
             </Grid>

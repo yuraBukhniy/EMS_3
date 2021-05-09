@@ -38,37 +38,13 @@ const useStyles = makeStyles(theme => ({
 export default function () {
   const classes = useStyles();
   const projectId = useParams().id
-  
-  // const initial = {
-  //   amount: 0,
-  //   salary: 0
-  // }
-  const [project, setProject] = useState({
-    // estimate: {
-    //   managers: initial,
-    //   leads: initial,
-    //   devs: {},
-    //   testers: {},
-    //   analysts: initial,
-    //   designers: initial
-    // }
-  })
+  const [project, setProject] = useState({})
   const [costs, setCosts] = useState(0)
   const [newBudget, setBudget] = useState(0)
   const [managers, setManagers] = useState({})
   const [leads, setLeads] = useState({})
-  const [devs, setDevs] = useState({
-    // trainee: initial,
-    // junior: initial,
-    // middle: initial,
-    // senior: initial
-  })
-  const [testers, setTesters] = useState({
-    // trainee: initial,
-    // junior: initial,
-    // middle: initial,
-    // senior: initial
-  })
+  const [devs, setDevs] = useState({})
+  const [testers, setTesters] = useState({})
   const [designers, setDesigners] = useState({})
   const [analysts, setAnalysts] = useState({})
   
@@ -86,7 +62,6 @@ export default function () {
     axios.get(`http://localhost:5000/employees/costs/${projectId}`)
       .then(res => {
         setCosts(res.data)
-        //console.log(project.estimate)
       })
   }, []);
   
@@ -111,7 +86,6 @@ export default function () {
   }
   
   const submitHandler = async () => {
-    //console.log({managers, leads, devs, testers, analysts, designers})
     axios.patch(`http://localhost:5000/project/setestimate/${projectId}`, {costs, currentBudget: project.budget, newBudget, managers, leads, devs, testers, designers, analysts})
       .then(resp => {
         setAlert({
@@ -119,7 +93,6 @@ export default function () {
           severity: 'info',
           message: resp.data.message
         })
-        //console.log(resp.data.data)
       })
       .catch(err => {
         setAlert({

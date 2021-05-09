@@ -7,7 +7,8 @@ const schema = new Schema({
   singleTax: Number,
   contribTax: Number,
   sum: Number,
-  deduction: Number
+  deduction: Number,
+  premium: Number
 });
 
 module.exports = model('payments', schema);

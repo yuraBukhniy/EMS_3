@@ -43,22 +43,7 @@ const getOverallAmount = obj => {
 
 export default function ProjectDetails({role}) {
   const classes = useStyles();
-  const [project, setProject] = useState({
-    // estimate: {
-    //   managers: 0,
-    //   leads: 0,
-    //   devs: {},
-    //   testers: {},
-    //   analysts: 0,
-    //   designers: 0
-    // }
-  });
-  // const [projectData, setProjectData] = useState({
-  //   managers: project.estimate ? project.estimate.managers : 0,
-  //   leads: project.estimate ? project.estimate.leads : 0,
-  //   devs: project.estimate ? project.estimate.devs : 0,
-  //   testers: project.estimate ? project.estimate.testers : 0
-  // });
+  const [project, setProject] = useState({});
   const [employees, setEmployees] = useState([])
   
   const projectIdParams = useParams().id;
@@ -68,28 +53,12 @@ export default function ProjectDetails({role}) {
     axios.get(`http://localhost:5000/project/get/${projectId}`)
       .then(res => {
         setProject(res.data)
-        //console.log(project.estimate)
       })
     axios.get(`http://localhost:5000/employees/project/${projectId}`)
       .then(res => {
         setEmployees(res.data)
       })
   }, []);
-  
-  // const changeHandler = event => {
-  //   setProjectData({
-  //     ...projectData,
-  //     [event.target.name]: event.target.value
-  //   })
-  // }
-  //
-  // const buttonHandler = async (id) => {
-  //   axios.patch(`http://localhost:5000/project/setestimate/${id}`, projectData)
-  //     .then(resp => {
-  //       alert(resp.data.message)
-  //       window.location = '/'
-  //     })
-  // }
   
   return (
     <>
@@ -111,7 +80,7 @@ export default function ProjectDetails({role}) {
           <Typography className={classes.marginUp} variant='h6'>
             {project.description}
           </Typography>
-          {/*<Grid container spacing={2}>*/}
+          
           <Grid item xs={12}>
             {project.estimate ? (
               <>
@@ -157,7 +126,6 @@ export default function ProjectDetails({role}) {
           </Grid>
       
           {role === 'manager' ?
-            
             <Grid item xs={12}>
               <Button
                 variant="contained"
@@ -166,57 +134,6 @@ export default function ProjectDetails({role}) {
               >
                 Керування структурою персоналу
               </Button>
-              
-              {/*<Typography className={classes.marginUp} variant='h5'>*/}
-              {/*  Введіть кількість працівників, потрібних для проєкту*/}
-              {/*</Typography>*/}
-              {/*<Grid item xs={6}>*/}
-              {/*  <TextField*/}
-              {/*    size='small'*/}
-              {/*    fullWidth*/}
-              {/*    label="Менеджери"*/}
-              {/*    name="managers"*/}
-              {/*    onChange={changeHandler}*/}
-              {/*  />*/}
-              {/*</Grid>*/}
-              {/*<Grid item xs={6}>*/}
-              {/*  <TextField*/}
-              {/*    size='small'*/}
-              {/*    fullWidth*/}
-              {/*    label="Керівники команди"*/}
-              {/*    name="leads"*/}
-              {/*    onChange={changeHandler}*/}
-              {/*  />*/}
-              {/*</Grid>*/}
-              {/*<Grid item xs={6}>*/}
-              {/*  <TextField*/}
-              {/*    size='small'*/}
-              {/*    fullWidth*/}
-              {/*    label="Розробники"*/}
-              {/*    name="devs"*/}
-              {/*    onChange={changeHandler}*/}
-              {/*  />*/}
-              {/*</Grid>*/}
-              {/*<Grid item xs={6}>*/}
-              {/*  <TextField*/}
-              {/*    size='small'*/}
-              {/*    fullWidth*/}
-              {/*    label="Тестувальники"*/}
-              {/*    name="testers"*/}
-              {/*    onChange={changeHandler}*/}
-              {/*  />*/}
-              {/*</Grid>*/}
-              {/*<Grid item xs={6}>*/}
-              {/*  <Button*/}
-              {/*    type="button"*/}
-              {/*    variant="contained"*/}
-              {/*    color="primary"*/}
-              {/*    className={classes.submit}*/}
-              {/*    onClick={() => buttonHandler(projectId)}*/}
-              {/*  >*/}
-              {/*    Зберегти*/}
-              {/*  </Button>*/}
-              {/*</Grid>*/}
             </Grid> : null}
         </Grid>
         
@@ -242,10 +159,8 @@ export default function ProjectDetails({role}) {
                   {employee.leaves.map(leave =>
                     leave.status === 'Прийнято' &&
                     (new Date(leave.startDate).getDate() <= new Date(Date.now()).getDate()
-                      // || new Date(leave.startDate).getMonth() <= new Date(Date.now()).getMonth()
                     ) &&
                     (new Date(Date.now()).getDate() <= new Date(leave.endDate).getDate()
-                      // || new Date(Date.now()).getMonth() <= new Date(leave.endDate).getMonth()
                     ) ?
                       <Typography key={leave._id} variant="body2" color='secondary'>
                         У відпустці до {convertDate(leave.endDate)}
@@ -254,55 +169,11 @@ export default function ProjectDetails({role}) {
                   )}
         
                 </CardContent>
-                <CardActions>
-                  {/*<Button size="small" onClick={() => viewDetailsHandler(employee._id)}>View Details</Button>*/}
-                  {/*<Button size="small" onClick={() => setOpenModal(true)}>Edit</Button>*/}
-                </CardActions>
               </Card>
             </Grid>
           ))}
         </Grid>
       </Grid>
-      
-      
-      {/*{role === 'HR' ?*/}
-      {/*  <TableContainer component={Paper}>*/}
-      {/*    <Table className={classes.table} aria-label="customized table">*/}
-      {/*      <TableHead>*/}
-      {/*        <TableRow>*/}
-      {/*          {headers.map(h =>*/}
-      {/*            <StyledTableCell key={h}>{h}</StyledTableCell>*/}
-      {/*          )}*/}
-      {/*        </TableRow>*/}
-      {/*      </TableHead>*/}
-      {/*      <TableBody>*/}
-      {/*        {candList.map((row) => (*/}
-      {/*          <StyledTableRow key={row._id}>*/}
-      {/*            <StyledTableCell component="th" scope="row">*/}
-      {/*              {row.firstName}*/}
-      {/*            </StyledTableCell>*/}
-      {/*            <StyledTableCell>{row.lastName}</StyledTableCell>*/}
-      {/*            <StyledTableCell>{row.position}</StyledTableCell>*/}
-      {/*            <StyledTableCell>{row.project}</StyledTableCell>*/}
-      {/*            <StyledTableCell>{convertDate(row.interviewDate)}</StyledTableCell>*/}
-      {/*            <StyledTableCell>{row.interviewer}</StyledTableCell>*/}
-      {/*            <StyledTableCell><i>{row.status}</i></StyledTableCell>*/}
-      {/*            <StyledTableCell>*/}
-      {/*              <ButtonGroup size="small" aria-label="small outlined button group">*/}
-      {/*                <Button onClick={(event) => buttonAddEmplHandler(row._id)}>*/}
-      {/*                  <PersonAddIcon />*/}
-      {/*                </Button>*/}
-      {/*                <Button onClick={() => buttonDeleteHandler(row._id)}>*/}
-      {/*                  <RemoveIcon />*/}
-      {/*                </Button>*/}
-      {/*              </ButtonGroup>*/}
-      {/*            </StyledTableCell>*/}
-      {/*          </StyledTableRow>*/}
-      {/*        ))}*/}
-      {/*      </TableBody>*/}
-      {/*    </Table>*/}
-      {/*  </TableContainer>*/}
-      {/*: null}*/}
     </>
   )
 }

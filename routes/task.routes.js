@@ -1,7 +1,6 @@
 const {Router} = require('express');
 const Task = require('../database/Task');
 const {Types} = require('mongoose')
-//const User = require('../database/userModel');
 
 const router = Router();
 
@@ -87,7 +86,33 @@ router.patch('/edit/:id', async (req, res) => {
     res.json({
       message: "Updated"
     })
-    //res.json({newStatus: !!newStatus, assignedTo: !!assignedTo})
+  } catch (err) {
+    console.error(err.message)
+    res.status(500).send(err)
+  }
+})
+
+router.put('/overtime/:id', async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id);
+    const {overtime} = task;
+    
+    const newOvertime = req.body;
+    let exists, index = -1;
+    overtime.forEach(item => {
+      if(item.date === newOvertime.date && item.employee === newOvertime.employee) {
+        exists = true;
+        index = overtime.indexOf(item)
+      }
+    })
+    if(exists) overtime[index].hours = newOvertime.hours;
+    else overtime.push(newOvertime);
+    await Task.findByIdAndUpdate(req.params.id, {overtime});
+    
+    res.json({
+      message: "Овертайми додано",
+      overtime
+    });
   } catch (err) {
     console.error(err.message)
     res.status(500).send(err)

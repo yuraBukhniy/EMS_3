@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%',
     marginTop: theme.spacing(3),
   },
   formControl: {
@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
   },
   select: {
     maxWidth: 400,
-    //marginBottom: 20
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -75,8 +74,6 @@ export default function NewLeave() {
       .then(resp => {
         console.log(resp.data)
       })
-    //window.location = '/tasks';
-    //console.log(leaveData)
   };
   
   const cancelHandler = () => {
@@ -124,7 +121,7 @@ export default function NewLeave() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                type='datetime-local'
+                type='date'
                 variant="outlined"
                 size='small'
                 fullWidth
@@ -136,7 +133,7 @@ export default function NewLeave() {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                type='datetime-local'
+                type='date'
                 variant="outlined"
                 size='small'
                 fullWidth
@@ -156,7 +153,6 @@ export default function NewLeave() {
                 name="type"
                 className={classes.select}
                 onChange={changeHandler}
-                //onChange={event => changeStatusHandler(event.target.value)}
               >
                 {types.map(type =>
                   <MenuItem key={type} value={type}>{type}</MenuItem>

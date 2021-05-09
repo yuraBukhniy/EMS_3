@@ -10,6 +10,7 @@ const schema = new Schema({
   status: {type: String, default: 'У черзі'},
   deadline: Date,
   endDate: Date,
+  overtime: Array
 });
 
 module.exports = model('tasks', schema);

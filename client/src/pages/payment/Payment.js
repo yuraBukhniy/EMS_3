@@ -70,7 +70,7 @@ export default function ({role}) {
       })
   }, []);
   
-  const headers = ["Дата нарахування", "Ставка (у грн)", "Єдиний податок, грн", "ЄСВ, грн", "Сума виплати", "Відрахування за неопл. відп."]
+  const headers = ["Дата нарахування", "Ставка (у грн)", "Єдиний податок, грн", "ЄСВ, грн", "Сума виплати", "Доплати", "Відрахування"]
   
   return (
     <>
@@ -92,20 +92,22 @@ export default function ({role}) {
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
-            {payments.map((row) => (
-              <StyledTableRow key={row._id}>
-                <StyledTableCell component="th" scope="row">
-                  {convertDate(row.date)}
-                </StyledTableCell>
-                <StyledTableCell>{row.salary}</StyledTableCell>
-                <StyledTableCell>{row.singleTax}</StyledTableCell>
-                <StyledTableCell>{row.contribTax}</StyledTableCell>
-                <StyledTableCell><b>{row.sum}</b></StyledTableCell>
-                <StyledTableCell>-{row.deduction}</StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
+          {payments.length ?
+            <TableBody>
+              {payments.map((row) => (
+                <StyledTableRow key={row._id}>
+                  <StyledTableCell component="th" scope="row">
+                    {convertDate(row.date)}
+                  </StyledTableCell>
+                  <StyledTableCell>{row.salary.toFixed(2)}</StyledTableCell>
+                  <StyledTableCell>{row.singleTax.toFixed(2)}</StyledTableCell>
+                  <StyledTableCell>{row.contribTax}</StyledTableCell>
+                  <StyledTableCell><b>{row.sum.toFixed(2)}</b></StyledTableCell>
+                  <StyledTableCell>{row.premium ? row.premium.toFixed(2) : 0}</StyledTableCell>
+                  <StyledTableCell>-{row.deduction ? row.deduction.toFixed(2) : 0}</StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody> : null}
         </Table>
       </TableContainer>
       
