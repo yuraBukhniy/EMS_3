@@ -10,6 +10,9 @@ import NewLeave from "../pages/leave/NewLeave";
 import LeaveDetails from "../pages/leave/LeaveDetails";
 import EmployeeDetails from "../pages/EmployeeDetails";
 import Payment from "../pages/payment/Payment";
+import ServicePage from "../pages/service/Service";
+import NewRequest from "../pages/service/NewRequest";
+import ServiceDetails from "../pages/service/ServiceDetails";
 
 export default function LeadRoutes() {
   return (
@@ -30,9 +33,15 @@ export default function LeadRoutes() {
         <LeaveDetails lead={true} />}
       />
       <Route exact path='/payment' component={Payment} />
-      <ServiceRoutes admin={false} />
-        <Route exact path="/user" component={EmployeeDetails} />
-        <Route exact path="/:id" component={EmployeeDetails} />
+      <Route exact path="/user" component={EmployeeDetails} />
+      <Route exact path="/service" render={() =>
+        <ServicePage admin={false} />}
+      />
+      <Route exact path="/service/new" component={NewRequest}/>
+      <Route exact path="/service/:id" render={(props) =>
+        <ServiceDetails id={props.match.params.id} admin={false} />}
+      />
+      <Route exact path="/:id" component={EmployeeDetails} />
       <Redirect to='/' />
     </Switch>
   )

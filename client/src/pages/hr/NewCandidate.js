@@ -44,6 +44,7 @@ export default function NewCandidate() {
     lastName: '',
     email: '',
     phone: '',
+    seniority: '',
     position: '',
     project: '',
     interviewDate: '',
@@ -87,6 +88,7 @@ export default function NewCandidate() {
   }
   
   const classes = useStyles();
+  const seniorities = ['Trainee', 'Junior', 'Middle', 'Senior', 'Lead']
   
   return (
     <Container component="main" maxWidth="sm">
@@ -135,7 +137,23 @@ export default function NewCandidate() {
                 onChange={changeHandler}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={6}>
+              <TextField
+                select
+                defaultValue=''
+                variant="outlined"
+                size='small'
+                fullWidth
+                name="seniority"
+                label="Рівень"
+                onChange={changeHandler}
+              >
+                {seniorities.map(item =>
+                  <MenuItem key={item} value={item}>{item}</MenuItem>
+                )}
+              </TextField>
+            </Grid>
+            <Grid item xs={6}>
               <TextField
                 variant="outlined"
                 size='small'

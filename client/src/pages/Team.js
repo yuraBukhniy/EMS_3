@@ -38,6 +38,17 @@ const useStyles = makeStyles({
   }
 });
 
+function isInVacation(start, end) {
+  const startDate = new Date(start).getTime();
+  const endDate = new Date(end).getTime();
+  const today = Date.now();
+  // let result = false;
+  // if(today.getMonth() === endDate.getMonth()) {
+  //   result = startDate.getDate() <= today.getDate() && today.getDate() <= endDate.getDate();
+  // }
+  return startDate <= today && today <= (endDate + 24*3600*1000);
+}
+
 export default function Team({manager}) {
   const classes = useStyles();
   const leadUsername = JSON.parse(localStorage.getItem('user')).username;
@@ -78,13 +89,7 @@ export default function Team({manager}) {
                 </Typography>
   
                 {employee.leaves.map(leave =>
-                  leave.status === 'Прийнято' &&
-                  (new Date(leave.startDate).getDate() <= new Date(Date.now()).getDate()
-                    // || new Date(leave.startDate).getMonth() <= new Date(Date.now()).getMonth()
-                  ) &&
-                  (new Date(Date.now()).getDate() <= new Date(leave.endDate).getDate()
-                    // || new Date(Date.now()).getMonth() <= new Date(leave.endDate).getMonth()
-                  ) ?
+                  leave.status === 'Прийнято' && isInVacation(leave.startDate, leave.endDate) ?
                     <Typography key={leave._id} variant="body2" color='secondary'>
                       У відпустці до {convertDate(leave.endDate)}
                     </Typography>
@@ -92,10 +97,6 @@ export default function Team({manager}) {
                 )}
                 
               </CardContent>
-              <CardActions>
-                {/*<Button size="small" onClick={() => viewDetailsHandler(employee._id)}>View Details</Button>*/}
-                {/*<Button size="small" onClick={() => setOpenModal(true)}>Edit</Button>*/}
-              </CardActions>
             </Card>
           </Grid>
         ))}
@@ -122,27 +123,13 @@ export default function Team({manager}) {
                       Керівник: {employee.supervisor}
                     </Typography>
                     {employee.leaves ? employee.leaves.map(leave =>
-                    leave.status === 'Прийнято' &&
-                      (new Date(leave.startDate).getDate() <= new Date(Date.now()).getDate()
-                        // && new Date(leave.startDate).getMonth() === new Date(Date.now()).getMonth() ||
-                        // new Date(leave.startDate).getDate() >= new Date(Date.now()).getDate() &&
-                        // new Date(leave.startDate).getMonth() <= new Date(Date.now()).getMonth()
-                      ) &&
-                      (new Date(Date.now()).getDate() <= new Date(leave.endDate).getDate()
-                        // && new Date(Date.now()).getMonth() === new Date(leave.endDate).getMonth() ||
-                        // new Date(Date.now()).getDate() >= new Date(leave.endDate).getDate() &&
-                        // new Date(Date.now()).getMonth() <= new Date(leave.endDate).getMonth()
-                      ) ?
+                    leave.status === 'Прийнято' && isInVacation(leave.startDate, leave.endDate) ?
                         <Typography key={leave._id} variant="body2" color='secondary'>
                           У відпустці до {convertDate(leave.endDate)}
                         </Typography>
                         : null
                     ) : null}
                   </CardContent>
-                  <CardActions>
-                    {/*<Button size="small" onClick={() => viewDetailsHandler(employee._id)}>View Details</Button>*/}
-                    {/*<Button size="small" onClick={() => setOpenModal(true)}>Edit</Button>*/}
-                  </CardActions>
                 </Card>
               </Grid> : null
             ))}

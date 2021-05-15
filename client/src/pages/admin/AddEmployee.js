@@ -115,7 +115,7 @@ export default function () {
   
   const classes = useStyles();
   
-  const seniorities = ['Trainee', 'Junior', 'Middle', 'Senior', 'Lead', 'Project Manager']
+  const seniorities = ['Trainee', 'Junior', 'Middle', 'Senior', 'Lead']
   
   return (
     <Container component="main" maxWidth="sm">

@@ -8,6 +8,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
+import getPosition from '../../components/GetPosition';
 
 const useStyles = makeStyles({
   marginDown: {
@@ -71,7 +72,7 @@ export default function CandDetails() {
         {candidate.firstName + " " + candidate.lastName}
       </Typography>
       <Typography variant="body1">
-        Позиція: {candidate.position}
+        Позиція: {getPosition(candidate.seniority, candidate.position)}
       </Typography>
       <Typography variant="body1">
         Проєкт: {candidate.project ? candidate.project.name : null}

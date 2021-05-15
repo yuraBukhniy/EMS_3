@@ -1,5 +1,6 @@
 const {Router} = require('express');
 const User = require('../database/userModel');
+const Project = require('../database/Project')
 
 const router = Router();
 
@@ -18,9 +19,18 @@ router.get('/', async (req, res) => {
 // список лідів і менеджерів проекту
 router.get('/leads/:id', async (req, res) => {
   try {
-    const leads = await User.find(
-      {project: req.params.id, role: ['manager', 'teamLead']},
-      'username firstName lastName seniority position')
+    const project = await Project.findById(req.params.id)
+    let leads;
+    if(project.code === 'P0001' || project.code === 'P0010') { // Administration and HR Department
+      leads = await User.find({
+        project: req.params.id,
+        position: 'Manager'
+      }, 'username firstName lastName seniority position')
+    }
+    else leads = await User.find({
+        project: req.params.id,
+        role: ['manager', 'teamLead']
+      }, 'username firstName lastName seniority position')
     res.json(leads)
   } catch(err) {
     console.error(err)

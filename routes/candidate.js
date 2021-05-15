@@ -10,9 +10,9 @@ const router = Router();
 
 router.post('/add', async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, position, project, interviewDate, interviewer } = req.body;
+    const { firstName, lastName, email, phone, seniority, position, project, interviewDate, interviewer } = req.body;
     const newCandidate = new Candidate({
-      firstName, lastName, email, phone, position, project, interviewDate, interviewer
+      firstName, lastName, email, phone, seniority, position, project, interviewDate, interviewer
     });
     await newCandidate.save();
     res.status(201).json({
@@ -49,9 +49,7 @@ router.get('/:id', async (req, res) => {
 
 router.patch('/edit/:id', async (req, res) => {
   try {
-    //const {status, interviewDate, firstName, lastName, email, position} = req.body;
     const {newCandData, candidate} = req.body
-    //const {firstName, lastName, email, position} = candidate
     const setDataToUpdate = (status, date) => {
       if(status && date) return {status, interviewDate: date};
       else if(status) return {status};
@@ -84,11 +82,9 @@ router.patch('/edit/:id', async (req, res) => {
 
 router.post('/createuser', async (req, res) => {
   try {
-    const { candId } = req.body;
+    const { username, password, supervisor, role, salary, candId } = req.body;
     const candidate = await Candidate.findById(candId);
-    const { username, password, seniority, position, supervisor, role, salary } = req.body;
-    
-    const { firstName, lastName, email, phone, project } = candidate;
+    const { firstName, lastName, email, phone, seniority, position, project } = candidate;
     const exist = await User.findOne({ username });
     if(exist) {
       return res.status(400).json({
@@ -145,7 +141,7 @@ router.post('/createuser', async (req, res) => {
 router.delete('/delete/:id', async (req, res) => {
   try {
     Candidate.deleteOne({_id: req.params.id}, (err) => {
-      err ? res.status(500).json(err) : res.json('Candidate deleted')
+      err ? res.status(500).json(err) : res.json('Кандидат видалений')
     })
     
   } catch (err) {

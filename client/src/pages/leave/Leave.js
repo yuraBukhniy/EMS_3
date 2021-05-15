@@ -66,8 +66,6 @@ export default function LeaveMgmtPage({role}) {
   const [pendingLeaves, setPendingLeaves] = useState([]);
   const userId = JSON.parse(localStorage.getItem('user')).userId;
   const username = JSON.parse(localStorage.getItem('user')).username;
-  // const serverUrl = admin ? `http://localhost:5000/service`
-  //   : `http://localhost:5000/leave/user/${userId}`;
   
   useEffect(() => {
     axios.get(`http://localhost:5000/leave/user/${userId}`)
@@ -86,7 +84,7 @@ export default function LeaveMgmtPage({role}) {
   function setStatus(id, status) {
     axios.patch(`http://localhost:5000/leave/status/${id}`, {status})
       .then(res => {
-        console.log(res.data)
+        alert(res.data.message)
       })
   }
   
@@ -102,46 +100,47 @@ export default function LeaveMgmtPage({role}) {
   
       {role === 'teamLead' ?
         <>
-        <h1>Запити від підлеглих</h1>
-        <TableContainer component={Paper} className={classes.table1}>
-          <Table aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                {headers1.map(header => (
-                  <StyledTableCell key={header}>{header}</StyledTableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {pendingLeaves.map((row) => (
-                <StyledTableRow key={row._id}>
-                  <StyledTableCell component="th" scope="row">
-                    {/*<Link to={`/leave/${row._id}`}>*/}
-                      {row.author ? `${row.author.firstName} ${row.author.lastName}` : null}
-                    {/*</Link>*/}
-                  </StyledTableCell>
-                  <StyledTableCell>{row.type}</StyledTableCell>
-                  <StyledTableCell>{convertDate(row.startDate)}</StyledTableCell>
-                  <StyledTableCell>{convertDate(row.endDate)}</StyledTableCell>
-                  <StyledTableCell>{row.status}</StyledTableCell>
-                  <StyledTableCell>
-                    <ButtonGroup size="small" aria-label="small outlined button group">
-                      <Button onClick={() => viewDetailsHandler(row._id)}>
-                        <ListAltIcon />
-                      </Button>
-                      <Button onClick={() => setStatus(row._id, 'Прийнято')}>
-                        <ThumbUpAltIcon />
-                      </Button>
-                      <Button onClick={() => setStatus(row._id, 'Відхилено')}>
-                        <ThumbUDownAltIcon />
-                      </Button>
-                    </ButtonGroup>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+          <h1>Запити від підлеглих</h1>
+          {pendingLeaves.length ?
+            <TableContainer component={Paper} className={classes.table1}>
+              <Table aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    {headers1.map(header => (
+                      <StyledTableCell key={header}>{header}</StyledTableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {pendingLeaves.map((row) => (
+                    <StyledTableRow key={row._id}>
+                      <StyledTableCell component="th" scope="row">
+                        {row.author ? `${row.author.firstName} ${row.author.lastName}` : null}
+                      </StyledTableCell>
+                      <StyledTableCell>{row.type}</StyledTableCell>
+                      <StyledTableCell>{convertDate(row.startDate)}</StyledTableCell>
+                      <StyledTableCell>{convertDate(row.endDate)}</StyledTableCell>
+                      <StyledTableCell>{row.status}</StyledTableCell>
+                      <StyledTableCell>
+                        <ButtonGroup size="small" aria-label="small outlined button group">
+                          <Button onClick={() => viewDetailsHandler(row._id)}>
+                            <ListAltIcon />
+                          </Button>
+                          <Button onClick={() => setStatus(row._id, 'Прийнято')}
+                                  disabled={row.status !== 'Очікує підтвердження'}>
+                            <ThumbUpAltIcon />
+                          </Button>
+                          <Button onClick={() => setStatus(row._id, 'Відхилено')}
+                                  disabled={row.status !== 'Очікує підтвердження'}>
+                            <ThumbUDownAltIcon />
+                          </Button>
+                        </ButtonGroup>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer> : <p>Немає заявок</p>}
         </>
         : null}
       

@@ -21,11 +21,11 @@ function getSidebarData(role) {
       icon: <PeopleOutlineIcon/>,
       link: "/candidates"
     },
-    // {
-    //   title: "Працівники",
-    //   icon: <WorkOutlineIcon/>,
-    //   link: "/employees"
-    // },
+    {
+      title: "Відпустки",
+      icon: <CalendarTodayIcon/>,
+      link: "/leave"
+    },
     {
       title: "Зарплата",
       icon: <MonetizationOnIcon/>,
@@ -144,14 +144,19 @@ function getSidebarData(role) {
       link: "/employees"
     },
     {
-      title: "Тех. підтримка",
-      icon: <SettingsIcon/>,
-      link: "/service"
+      title: "Відпустки",
+      icon: <CalendarTodayIcon/>,
+      link: "/leave"
     },
     {
       title: "Зарплата",
       icon: <MonetizationOnIcon/>,
       link: "/payment"
+    },
+    {
+      title: "Тех. підтримка",
+      icon: <SettingsIcon/>,
+      link: "/service"
     },
     {
       title: "Мій профіль",

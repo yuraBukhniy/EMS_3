@@ -12,7 +12,6 @@ const schema = new Schema({
   role: { type: String, default: 'employee' },
   registeredDate: { type: Date, default: new Date(Date.now()), required: true },
   supervisor: {type: String},
-  team: [String],
   project: {type: Types.ObjectId, ref: 'projects'},
   salary: Number,
   leavesAvailable: {

@@ -61,7 +61,9 @@ router.post('/login', async (req, res) => {
       role: user.role,
       username: user.username,
       project: user.project,
-      supervisor: user.supervisor
+      supervisor: user.supervisor,
+      seniority: user.seniority,
+      position: user.position
     })
     
   } catch(err) {

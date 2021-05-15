@@ -8,6 +8,14 @@ import AddEmployee from "../pages/admin/AddEmployee";
 import EmployeeDetails from "../pages/admin/EmployeeDetails";
 import ServiceRoutes from "./functional/ServiceRoutes";
 import Payment from "../pages/payment/Payment";
+import LeaveMgmtPage from "../pages/leave/Leave";
+import UserPage from "../pages/EmployeeDetails";
+
+let role = JSON.parse(localStorage.getItem('user'))
+if(role) {
+  role = role.position.includes('Manager') ? 'teamLead' : 'employee'
+}
+console.log(role)
 
 export default function AdminRoute() {
   return (
@@ -23,6 +31,10 @@ export default function AdminRoute() {
       <Route exact path="/payment" render={() =>
         <Payment role='admin' />
       } />
+      <Route exact path='/leave' render={() =>
+        <LeaveMgmtPage role={role} />}
+      />
+      <Route exact path="/user" component={UserPage} />
       <ServiceRoutes admin={true} />
       <Redirect to="/" />
     </Switch>

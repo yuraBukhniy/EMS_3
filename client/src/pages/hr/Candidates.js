@@ -14,11 +14,11 @@ import {ButtonGroup, MenuItem} from '@material-ui/core';
 import ListAltIcon from '@material-ui/icons/ListAlt';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import RemoveIcon from '@material-ui/icons/Remove';
-//import NewCandidate from "./NewCandidate";
 import Modal from '@material-ui/core/Modal';
 import axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import convertDate from "../../components/ConvertDate";
+import getPosition from '../../components/GetPosition';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
   
   paper: {
     position: 'absolute',
-    maxWidth: 600,
+    maxWidth: 500,
     top: 70,
     left: `30%`,
     //transform: `translate(-${top}%, -${left}%)`,
@@ -74,8 +74,8 @@ export default function CandidatesPage() {
   const [form, setForm] = useState({
     username: '',
     password: '',
-    seniority: '',
-    position: '',
+    // seniority: '',
+    // position: '',
     role: '',
     supervisor: '',
     salary: '',
@@ -127,8 +127,7 @@ export default function CandidatesPage() {
     })
   }
   
-  const headers = ["Ім'я", "Прізвище", "Позиція", "Проєкт", "Дата співбесіди", "Статус", "Дії"] //, "Проведе співбесіду"
-  const seniorities = ['Trainee', 'Junior', 'Middle', 'Senior', 'Lead', 'Project Manager']
+  const headers = ["Ім'я", "Прізвище", "Позиція", "Проєкт", "Дата співбесіди", "Статус", "Дії"]
   const roles = ['admin', 'HR', 'employee', 'teamLead', 'manager']
   
   return (
@@ -136,13 +135,7 @@ export default function CandidatesPage() {
       <h1>Кандидати</h1>
       <Button className={classes.button} variant="contained"
               href="candidates/new"
-              //onClick={() => setOpenModal(!openModal)}
       >Додати</Button>
-      {/*<Modal open={openModal} onClose={() => setOpenModal(false)}>*/}
-      {/*  <div className={classes.paper}>*/}
-      {/*    <NewCandidate />*/}
-      {/*  </div>*/}
-      {/*</Modal>*/}
       
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
@@ -160,7 +153,7 @@ export default function CandidatesPage() {
                   {row.firstName}
                 </StyledTableCell>
                 <StyledTableCell>{row.lastName}</StyledTableCell>
-                <StyledTableCell>{row.position}</StyledTableCell>
+                <StyledTableCell>{getPosition(row.seniority, row.position)}</StyledTableCell>
                 <StyledTableCell>{row.project.name ? row.project.name : null}</StyledTableCell>
                 <StyledTableCell>{convertDate(row.interviewDate, true)}</StyledTableCell>
                 {/*<StyledTableCell>{row.interviewer}</StyledTableCell>*/}
@@ -182,7 +175,7 @@ export default function CandidatesPage() {
                         <h1>Введіть додаткові дані працівника</h1>
                         <form noValidate>
                           <Grid container spacing={3}>
-                            <Grid item xs={12}>
+                            <Grid item xs={6}>
                               <TextField
                                 variant="outlined"
                                 size='small'
@@ -192,7 +185,7 @@ export default function CandidatesPage() {
                                 onChange={changeHandler}
                               />
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={6}>
                               <TextField
                                 variant="outlined"
                                 size='small'
@@ -203,32 +196,32 @@ export default function CandidatesPage() {
                                 onChange={changeHandler}
                               />
                             </Grid>
-                            <Grid item xs={6}>
-                              <TextField
-                                select
-                                defaultValue=''
-                                variant="outlined"
-                                size='small'
-                                fullWidth
-                                label="Рівень"
-                                name="seniority"
-                                onChange={changeHandler}
-                              >
-                                {seniorities.map(item =>
-                                  <MenuItem key={item} value={item}>{item}</MenuItem>
-                                )}
-                              </TextField>
-                            </Grid>
-                            <Grid item xs={6}>
-                              <TextField
-                                variant="outlined"
-                                size='small'
-                                fullWidth
-                                label="Позиція"
-                                name="position"
-                                onChange={changeHandler}
-                              />
-                            </Grid>
+                            {/*<Grid item xs={6}>*/}
+                            {/*  <TextField*/}
+                            {/*    select*/}
+                            {/*    defaultValue=''*/}
+                            {/*    variant="outlined"*/}
+                            {/*    size='small'*/}
+                            {/*    fullWidth*/}
+                            {/*    label="Рівень"*/}
+                            {/*    name="seniority"*/}
+                            {/*    onChange={changeHandler}*/}
+                            {/*  >*/}
+                            {/*    {seniorities.map(item =>*/}
+                            {/*      <MenuItem key={item} value={item}>{item}</MenuItem>*/}
+                            {/*    )}*/}
+                            {/*  </TextField>*/}
+                            {/*</Grid>*/}
+                            {/*<Grid item xs={6}>*/}
+                            {/*  <TextField*/}
+                            {/*    variant="outlined"*/}
+                            {/*    size='small'*/}
+                            {/*    fullWidth*/}
+                            {/*    label="Позиція"*/}
+                            {/*    name="position"*/}
+                            {/*    onChange={changeHandler}*/}
+                            {/*  />*/}
+                            {/*</Grid>*/}
                             <Grid item xs={12}>
                               <TextField
                                 select
@@ -244,11 +237,11 @@ export default function CandidatesPage() {
                                   <MenuItem
                                     key={item._id}
                                     value={item.username}
-                                  >{item.firstName} {item.lastName} ({item.seniority} {item.position})</MenuItem>
+                                  >{item.firstName} {item.lastName} ({getPosition(item.seniority, item.position)})</MenuItem>
                                 )}
                               </TextField>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={7}>
                               <TextField
                                 select
                                 defaultValue=''
@@ -264,7 +257,7 @@ export default function CandidatesPage() {
                                 )}
                               </TextField>
                             </Grid>
-                            <Grid item xs={6}>
+                            <Grid item xs={5}>
                               <TextField
                                 variant="outlined"
                                 size='small'

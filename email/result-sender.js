@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer')
 const config = require('config');
 
-module.exports = async function ({ firstName, lastName, email, position }, passed) {
+module.exports = async function ({ firstName, lastName, email, seniority, position }, passed) {
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -9,6 +9,7 @@ module.exports = async function ({ firstName, lastName, email, position }, passe
       pass: config.get('emailPassword'),
     },
   })
+  const vacancy = seniority ? seniority + " " + position : position
   await transporter.sendMail({
     from: `"EMS Administration" <${config.get('emailUser')}>`,
     to: email,
@@ -16,7 +17,7 @@ module.exports = async function ({ firstName, lastName, email, position }, passe
     html: passed ? `
         <h3>Привіт, ${firstName} ${lastName}!</h3>
         <p>
-          Вітаємо! Ви успішно пройшли співбесіду на вакансію <b>${position}</b>.
+          Вітаємо! Ви успішно пройшли співбесіду на вакансію <b>${vacancy}</b>.
           Ви отримали пропозицію працевлаштування у нашій компанії.
           <br>
           Надішліть листа з вашою відповіддю: чи приймаєте ви пропозицію, чи ні.
@@ -25,7 +26,7 @@ module.exports = async function ({ firstName, lastName, email, position }, passe
       ` : `
         <h3>Привіт, ${firstName} ${lastName}!</h3>
         <p>
-          На жаль, ви не пройшли співбесіду на вакансію <b>${position}</b>.
+          На жаль, ви не пройшли співбесіду на вакансію <b>${vacancy}</b>.
           Надіємось, наступного разу пощастить!
         </p>
         <p>Гарного дня!</p>
