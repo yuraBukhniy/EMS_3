@@ -16,6 +16,16 @@ router.get('/', async (req, res) => {
   }
 })
 
+router.get('/managers', async (req, res) => {
+  try {
+    const employees = await User.find({position: 'Project Manager'});
+    res.json(employees);
+  } catch(err) {
+    console.error(err.message)
+    res.status(500).send(err)
+  }
+})
+
 // список лідів і менеджерів проекту
 router.get('/leads/:id', async (req, res) => {
   try {
@@ -84,7 +94,12 @@ router.get('/:id', async (req, res) => {
   try {
     const employee = await User.findById(req.params.id)
       .populate({path: 'project', select: ['name']});
-    res.json(employee)
+    const supervisor = await User.findOne(
+      {username: employee.supervisor},
+      {firstName: 1, lastName: 1, seniority: 1, position: 1}
+    );
+    
+    res.json({employee, supervisor})
   } catch(err) {
     console.error(err.message)
     res.status(500).send(err)

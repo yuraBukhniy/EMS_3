@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import axios from "axios";
 import {Alert} from "@material-ui/lab";
-import {Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel} from "@material-ui/core";
+import {Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, MenuItem} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,12 +38,21 @@ export default function CreateProject() {
     code: '',
     name: '',
     description: '',
+    manager: ''
   });
+  const [managers, setManagers] = useState([]);
   const [alert, setAlert] = useState({
     show: false,
     severity: 'success',
     message: ''
-  })
+  });
+  
+  useEffect(() => {
+    axios.get('http://localhost:5000/employees/managers')
+      .then(res => {
+        setManagers(res.data)
+      })
+  }, [])
   
   const changeHandler = event => {
     setProjectData({
@@ -102,6 +111,24 @@ export default function CreateProject() {
                 name="description"
                 onChange={changeHandler}
               />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                select
+                defaultValue=''
+                variant="outlined"
+                size='small'
+                fullWidth
+                label="Менеджер"
+                name="manager"
+                onChange={changeHandler}
+              >
+                {managers.map(manager =>
+                  <MenuItem key={manager._id} value={manager._id}>
+                    {manager.firstName} {manager.lastName}
+                  </MenuItem>
+                )}
+              </TextField>
             </Grid>
             <Grid item xs={12}>
               <Alert

@@ -48,7 +48,8 @@ export default function ({task, cardWidth, handler}) {
             </Typography>
           ) : null}
           <Typography variant="body1">
-            Виконавці: {task.assignedTo.join(', ')}
+            {/*Виконавці: {task.assignedTo.join(', ')}*/}
+            Виконавці: {task.assignedTo.map(user => user.firstName + " " + user.lastName).join(', ')}
           </Typography>
           {task.status === 'Закрито' ?
             new Date(task.deadline) - new Date(task.endDate) >= 0 ?

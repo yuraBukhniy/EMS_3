@@ -9,6 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import {useParams} from "react-router-dom";
 import convertDate from "../../components/ConvertDate";
+import {saveAs} from 'file-saver';
 
 const useStyles = makeStyles((theme) => ({
   marginDown: {
@@ -64,9 +65,10 @@ export default function LeaveDetails({lead}) {
       ...leave,
       startDate: convertDate(leave.startDate),
       endDate: convertDate(leave.endDate)
-    })
+    }, {responseType: 'blob'})
       .then(res => {
-        console.log(res.data)
+        const file = new Blob([res.data], {type: 'application/pdf'});
+        saveAs(file, `leave_${leave.author.username}.pdf`)
       })
   }
   

@@ -143,7 +143,7 @@ export default function TaskDetails({role}) {
           </Typography>
         ) : null}
         <Typography className={classes.marginDown} color="textSecondary">
-          Виконавці: {task.assignedTo ? task.assignedTo.join(', ') : null}
+          Виконавці: {task.assignedTo ? task.assignedTo.map(user => user.firstName + " " + user.lastName).join(', ') : null}
         </Typography>
         <Typography className={classes.marginUp} variant='h5'>
           Опис
@@ -259,18 +259,18 @@ export default function TaskDetails({role}) {
           </Typography>
           
           {task.assignedTo.map(name =>
-            task.overtime.filter(item => item.employee === name).length ?
+            task.overtime.filter(item => item.employee === name.username).length ?
               <div key={task.assignedTo.indexOf(name)}>
                 <Typography className={classes.marginUp} variant='h6'>
-                  {name}
+                  {name.firstName + ' ' + name.lastName}
                 </Typography>
-                <TableContainer component={Paper} style={{width: 120 * (task.overtime.filter(item => item.employee === name).length + 1)}}>
+                <TableContainer component={Paper} style={{width: 120 * (task.overtime.filter(item => item.employee === name.username).length + 1)}}>
                   <Table size="small" aria-label="a dense table">
                     <TableHead>
                       <TableRow>
                         <TableCell>Дата</TableCell>
                         {task.overtime.map(item =>
-                          item.employee === name ?
+                          item.employee === name.username ?
                             <TableCell align="center" key={task.overtime.indexOf(item)}>
                               {item.date}
                             </TableCell> : null
@@ -281,7 +281,7 @@ export default function TaskDetails({role}) {
                       <TableRow>
                         <TableCell>Години</TableCell>
                         {task.overtime.map(item =>
-                          item.employee === name ?
+                          item.employee === name.username ?
                             <TableCell align="center" key={task.overtime.indexOf(item)}>
                               {item.hours}
                             </TableCell> : null

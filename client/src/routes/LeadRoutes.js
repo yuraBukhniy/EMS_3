@@ -5,7 +5,6 @@ import Tasks from "../pages/tasks/Tasks";
 import NewTask from "../pages/tasks/NewTask";
 import TaskDetails from "../pages/tasks/TaskDetails";
 import LeaveMgmtPage from "../pages/leave/Leave";
-import ServiceRoutes from "./functional/ServiceRoutes";
 import NewLeave from "../pages/leave/NewLeave";
 import LeaveDetails from "../pages/leave/LeaveDetails";
 import EmployeeDetails from "../pages/EmployeeDetails";
@@ -13,6 +12,7 @@ import Payment from "../pages/payment/Payment";
 import ServicePage from "../pages/service/Service";
 import NewRequest from "../pages/service/NewRequest";
 import ServiceDetails from "../pages/service/ServiceDetails";
+import ProjectDetails from "../pages/project/ProjectDetails";
 
 export default function LeadRoutes() {
   return (
@@ -41,7 +41,8 @@ export default function LeadRoutes() {
       <Route exact path="/service/:id" render={(props) =>
         <ServiceDetails id={props.match.params.id} admin={false} />}
       />
-      <Route exact path="/:id" component={EmployeeDetails} />
+      <Route exact path="/employee/:id" component={EmployeeDetails} />
+      <Route exact path="/project/:id" render={() => <ProjectDetails role='teamLead' />} />
       <Redirect to='/' />
     </Switch>
   )

@@ -1,18 +1,13 @@
 import React, {useEffect, useState} from "react";
-//import {useParams} from "react-router-dom";
 import axios from "axios";
 import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
 import Divider from "@material-ui/core/Divider";
-// import Container from "@material-ui/core/Container";
-// import Grid from "@material-ui/core/Grid";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-// import InputLabel from "@material-ui/core/InputLabel";
-// import Select from "@material-ui/core/Select";
-// import {Checkbox, FormControl, Input, ListItemText} from "@material-ui/core";
+import convertDate from "../../components/ConvertDate";
 
 const useStyles = makeStyles({
   marginDown: {
@@ -36,8 +31,6 @@ export default function ServiceDetails({id, admin}) {
   const [request, setRequest] = useState({});
   const [status, setStatus] = useState('');
   const [reply, setReply] = useState('');
-  // const leadUsername = JSON.parse(localStorage.getItem('user')).username;
-  // const requestId = useParams().id;
   
   useEffect(() => {
     axios.get(`http://localhost:5000/service/${id}`)
@@ -71,7 +64,7 @@ export default function ServiceDetails({id, admin}) {
         {request.title}
       </Typography>
       <Typography color="textSecondary">
-        Дата створення: {request.date}
+        Дата створення: {convertDate(request.date)}
       </Typography>
       <Typography color="textSecondary">
         Статус: {request.status}

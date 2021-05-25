@@ -5,17 +5,19 @@ import AddProject from "../pages/project/CreateProject";
 import ProjectDetails from "../pages/project/ProjectDetails";
 import Employees from "../pages/admin/Employees";
 import AddEmployee from "../pages/admin/AddEmployee";
-import EmployeeDetails from "../pages/admin/EmployeeDetails";
-import ServiceRoutes from "./functional/ServiceRoutes";
+import EmployeeDetails from "../pages/EmployeeDetails";
 import Payment from "../pages/payment/Payment";
 import LeaveMgmtPage from "../pages/leave/Leave";
-import UserPage from "../pages/EmployeeDetails";
+import NewLeave from "../pages/leave/NewLeave";
+import LeaveDetails from "../pages/leave/LeaveDetails";
+import ServicePage from "../pages/service/Service";
+import NewRequest from "../pages/service/NewRequest";
+import ServiceDetails from "../pages/service/ServiceDetails";
 
 let role = JSON.parse(localStorage.getItem('user'))
 if(role) {
   role = role.position.includes('Manager') ? 'teamLead' : 'employee'
 }
-console.log(role)
 
 export default function AdminRoute() {
   return (
@@ -27,15 +29,24 @@ export default function AdminRoute() {
       } />
       <Route exact path="/employees" component={Employees} />
       <Route exact path="/employees/new" component={AddEmployee} />
-      <Route exact path="/employees/:id" component={EmployeeDetails} />
+      <Route exact path="/employee/:id" component={EmployeeDetails} />
       <Route exact path="/payment" render={() =>
         <Payment role='admin' />
       } />
       <Route exact path='/leave' render={() =>
         <LeaveMgmtPage role={role} />}
       />
-      <Route exact path="/user" component={UserPage} />
-      <ServiceRoutes admin={true} />
+      <Route exact path='/leave/new' component={NewLeave} />
+      <Route exact path='/leave/:id' render={() =>
+        <LeaveDetails lead={role === 'teamLead'} />}
+      />
+      <Route exact path="/user" component={EmployeeDetails} />
+      <Route exact path="/service" render={() =>
+        <ServicePage admin />}
+      />
+      <Route exact path="/service/:id" render={(props) =>
+        <ServiceDetails id={props.match.params.id} admin />}
+      />
       <Redirect to="/" />
     </Switch>
   )

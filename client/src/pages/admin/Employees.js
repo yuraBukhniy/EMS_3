@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import Grid from "@material-ui/core/Grid";
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 const useStyles = makeStyles({
   root: {
@@ -30,11 +31,11 @@ const useStyles = makeStyles({
   pos: {
     marginBottom: 12,
   },
+  link: {
+    textDecoration: 'none',
+    color: 'initial'
+  }
 });
-
-const viewDetailsHandler = (id) => {
-  window.location = `/employee/${id}`
-}
 
 export default function () {
   const classes = useStyles();
@@ -60,7 +61,9 @@ export default function () {
             <Avatar className={classes.avatar} />
             <CardContent>
               <Typography variant="h6">
-                {employee.firstName + " " + employee.lastName}
+                <Link className={classes.link} to={`/employee/${employee._id}`}>
+                  {employee.firstName + " " + employee.lastName}
+                </Link>
               </Typography>
               <Typography variant="body2" component="p">
                 {employee.seniority + " " + employee.position}

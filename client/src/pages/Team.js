@@ -42,10 +42,6 @@ function isInVacation(start, end) {
   const startDate = new Date(start).getTime();
   const endDate = new Date(end).getTime();
   const today = Date.now();
-  // let result = false;
-  // if(today.getMonth() === endDate.getMonth()) {
-  //   result = startDate.getDate() <= today.getDate() && today.getDate() <= endDate.getDate();
-  // }
   return startDate <= today && today <= (endDate + 24*3600*1000);
 }
 
@@ -79,7 +75,7 @@ export default function Team({manager}) {
               <Avatar className={classes.avatar} />
               <CardContent>
                 <Typography variant="h6">
-                  <Link className={classes.link} to={manager ? `/team/${employee._id}` : `/${employee._id}`}>
+                  <Link className={classes.link} to={`/employee/${employee._id}`}>
                     {employee.firstName + " " + employee.lastName}
                   </Link>
                 </Typography>
@@ -112,7 +108,7 @@ export default function Team({manager}) {
                   <Avatar className={classes.avatar}/>
                   <CardContent>
                     <Typography variant="h6">
-                      <Link className={classes.link} to={manager ? `/team/${employee._id}` : `/${employee._id}`}>
+                      <Link className={classes.link} to={manager ? `/employee/${employee._id}` : `/${employee._id}`}>
                         {employee.firstName + " " + employee.lastName}
                       </Link>
                     </Typography>

@@ -10,6 +10,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,10 +39,14 @@ const useStyles = makeStyles((theme) => ({
   cancel: {
     margin: theme.spacing(3, 0, 2),
     marginLeft: 10
+  },
+  hideAlert: {
+    display: 'none'
+  },
+  showAlert: {
+    display: 'flex'
   }
 }));
-
-
 
 export default function NewLeave() {
   const userId = JSON.parse(localStorage.getItem('user')).userId;
@@ -52,7 +57,12 @@ export default function NewLeave() {
     startDate: '',
     endDate: '',
   })
-  const [leavesAvailable, setLeavesAvailable] = useState({})
+  const [leavesAvailable, setLeavesAvailable] = useState({});
+  const [alert, setAlert] = useState({
+    show: false,
+    severity: 'success',
+    message: ''
+  })
   const classes = useStyles();
   
   useEffect(() => {
@@ -72,7 +82,18 @@ export default function NewLeave() {
   const buttonHandler = async () => {
     axios.post('http://localhost:5000/leave/create', {leaveData, leavesAvailable})
       .then(resp => {
-        console.log(resp.data)
+        setAlert({
+          show: true,
+          severity: resp.data.error ? 'error' : 'success',
+          message: resp.data.message
+        })
+      })
+      .catch(err => {
+        setAlert({
+          show: true,
+          severity: 'error',
+          message: 'Помилка'
+        })
       })
   };
   
@@ -178,6 +199,14 @@ export default function NewLeave() {
           >
             Назад
           </Button>
+          <Grid item xs={12}>
+            <Alert
+              severity={alert.severity}
+              className={alert.show ? classes.showAlert : classes.hideAlert}
+            >
+              {alert.message}
+            </Alert>
+          </Grid>
         </form>
       </div>
     </Container>

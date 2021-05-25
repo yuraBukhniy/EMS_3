@@ -3,7 +3,9 @@ const Leave = require('../database/Leave');
 const User = require('../database/userModel');
 const Project = require('../database/Project')
 const {Types} = require('mongoose');
-const generateReport = require('../report/leave-report')
+const generateReport = require('../report/leave-report');
+const path = require('path');
+const fs = require('fs');
 
 function getLeaveDays(startDate, endDate) {
   const difference = Math.round((endDate - startDate) / (1000*60*60*24));
@@ -57,7 +59,8 @@ router.post('/create', async (req, res) => {
     const availableLeavesOfType = type === 'оплачувана' ? leavesAvailable.paid
       : type === 'неоплачувана' ? leavesAvailable.unpaid : leavesAvailable.illness
     if(days > availableLeavesOfType) {
-      return res.status(400).json({
+      return res.json({
+        error: true,
         message: 'Недостатньо днів, доступних для відпустки',
       })
     }
@@ -66,7 +69,7 @@ router.post('/create', async (req, res) => {
     await request.save();
     
     res.status(201).json({
-      message: 'Created',
+      message: 'Запит створено',
     })
     
   } catch (err) {
@@ -131,7 +134,6 @@ router.get('/team/:username', async (req, res) => {
 router.patch('/status/:id', async (req, res) => {
   try {
     const {status} = req.body;
-  
     if(status === 'Прийнято') {
       const {author, days, type} = await Leave.findById(req.params.id)
       const {leavesAvailable} = await User.findById(author);
@@ -142,8 +144,8 @@ router.patch('/status/:id', async (req, res) => {
         [translateTypeName(type)] : availableLeavesOfType - days
       }
       await User.findByIdAndUpdate(author, {leavesAvailable: newLeaveBalance})
+      console.log(newLeaveBalance, days)
     }
-   
     await Leave.findByIdAndUpdate(req.params.id, {status})
     res.json({
       message: status
@@ -156,10 +158,10 @@ router.patch('/status/:id', async (req, res) => {
 
 router.post('/report/:id', async (req, res) => {
   try {
-    generateReport('E:\\text_alignment.pdf', req.body)
-    res.status(201).json({
-      message: 'Звіт завантажений'
-    })
+    let filePath = path.join(__dirname, '../temp/file.pdf');
+    generateReport(filePath, req.body);
+    let file = fs.createReadStream(filePath);
+    file.pipe(res);
   } catch (err) {
     console.error(err)
     res.status(500).send(err)

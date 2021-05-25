@@ -11,11 +11,20 @@ const router = Router();
 const jsonPath = './payment/paymentSettings.json'
 const WORK_HOURS = 8
 
+const setDataToUpdate = data => {
+  let dataToUpdate = {}
+  for(let item of Object.keys(data)) {
+    if(data[item]) dataToUpdate[item] = data[item]
+  }
+  return dataToUpdate
+}
+
 router.put('/settings', async (req, res) => {
   try {
-    const data = JSON.stringify(req.body)
-    fs.writeFileSync(jsonPath, data)
-    
+    const currentData = JSON.parse(fs.readFileSync(jsonPath))
+    const received = setDataToUpdate(req.body)
+    const newData = JSON.stringify({...currentData, ...received})
+    fs.writeFileSync(jsonPath, newData)
     res.status(201).json({
       message: 'Дані оновлено'
     })

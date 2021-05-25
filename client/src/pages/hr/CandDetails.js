@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import axios from "axios";
 import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
@@ -24,6 +24,9 @@ const useStyles = makeStyles({
   cancel: {
     marginLeft: 10
   },
+  link: {
+    color: 'initial'
+  }
 });
 
 export default function CandDetails() {
@@ -34,6 +37,7 @@ export default function CandDetails() {
     interviewDate: ''
   });
   const id = useParams().id;
+  const projectLink = candidate.project ? `/project/${candidate.project._id}` : '';
   
   useEffect(() => {
     axios.get(`http://localhost:5000/cand/${id}`)
@@ -75,7 +79,10 @@ export default function CandDetails() {
         Позиція: {getPosition(candidate.seniority, candidate.position)}
       </Typography>
       <Typography variant="body1">
-        Проєкт: {candidate.project ? candidate.project.name : null}
+        Проєкт:&nbsp;
+        <Link className={classes.link} to={projectLink}>
+          {candidate.project ? candidate.project.name : null}
+        </Link>
       </Typography>
       <Typography className={classes.marginDown} variant="body1">
         Дата співбесіди: {convertDate(candidate.interviewDate)}

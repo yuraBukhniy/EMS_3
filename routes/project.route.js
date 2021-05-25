@@ -6,9 +6,10 @@ const router = Router();
 
 router.post('/create', async (req, res) => {
   try {
-    const data = req.body;
-    const newProject = new Project(data)
+    const {code, name, description, manager} = req.body;
+    const newProject = new Project({code, name, description})
     await newProject.save();
+    if(manager) await User.findByIdAndUpdate(manager, {project: newProject._id});
     res.status(201).json({
       message: 'Проєкт створено'
     })

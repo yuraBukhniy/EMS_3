@@ -86,7 +86,7 @@ export default function CandidatesPage() {
       .then(res => {
         setCandList(res.data)
       })
-  }, []);
+  }, [candList]);
   
   const submitHandler = async () => {
     const data = {candId, ...form}
@@ -114,11 +114,12 @@ export default function CandidatesPage() {
   const buttonDeleteHandler = async (id) => {
     await axios.delete(`http://localhost:5000/cand/delete/${id}`)
       .then(res => {
-        alert(res.data)
+        let newList = candList.filter(item => {
+          if(item._id !== id) return item
+        })
+        setCandList(newList)
       });
-    window.location = '/candidates'
   }
-  
   
   const changeHandler = event => {
     setForm({

@@ -79,12 +79,12 @@ export default function LeaveMgmtPage({role}) {
         .then(res => {
           setPendingLeaves(res.data)
         })
-    }, []);
+    }, [pendingLeaves]);
   
   function setStatus(id, status) {
     axios.patch(`http://localhost:5000/leave/status/${id}`, {status})
       .then(res => {
-        alert(res.data.message)
+        console.log(res.data)
       })
   }
   
