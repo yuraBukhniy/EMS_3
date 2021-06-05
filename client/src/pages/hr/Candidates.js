@@ -19,6 +19,7 @@ import axios from "axios";
 import Grid from "@material-ui/core/Grid";
 import convertDate from "../../components/ConvertDate";
 import getPosition from '../../components/GetPosition';
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -30,7 +31,12 @@ const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 650,
   },
-  
+  hideAlert: {
+    display: 'none'
+  },
+  showAlert: {
+    display: 'flex'
+  },
   paper: {
     position: 'absolute',
     maxWidth: 500,
@@ -62,23 +68,24 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-
-
 export default function CandidatesPage() {
   const classes = useStyles();
   const [candList, setCandList] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [candId, setId] = useState('');
-  const [leads, setLeads] = useState([])
-  
+  const [leads, setLeads] = useState([]);
+  const [project, setProject] = useState([]);
   const [form, setForm] = useState({
     username: '',
     password: '',
-    // seniority: '',
-    // position: '',
     role: '',
     supervisor: '',
-    salary: '',
+    salary: 2000,
+  });
+  const [alert, setAlert] = useState({
+    show: false,
+    severity: 'success',
+    message: ''
   });
   
   useEffect(() => {
@@ -92,8 +99,12 @@ export default function CandidatesPage() {
     const data = {candId, ...form}
     axios.post('http://localhost:5000/cand/createuser', data)
       .then(resp => {
-        alert(resp.data.message)
-        setOpenModal(false)
+        setAlert({
+          show: true,
+          severity: 'success',
+          message: resp.data.message
+        })
+        //setOpenModal(false)
       })
     //console.log(data)
   }
@@ -107,6 +118,10 @@ export default function CandidatesPage() {
     axios.get(`http://localhost:5000/employees/leads/${project}`)
       .then(res => {
         setLeads(res.data)
+      })
+    axios.get(`http://localhost:5000/project/get/${project}`)
+      .then(res => {
+        setProject(res.data)
       })
     setOpenModal(true)
   }
@@ -126,6 +141,10 @@ export default function CandidatesPage() {
       ...form,
       [event.target.name]: event.target.value
     })
+  }
+  
+  function getSalary(project, position) {
+  
   }
   
   const headers = ["Ім'я", "Прізвище", "Позиція", "Проєкт", "Дата співбесіди", "Статус", "Дії"]
@@ -157,7 +176,6 @@ export default function CandidatesPage() {
                 <StyledTableCell>{getPosition(row.seniority, row.position)}</StyledTableCell>
                 <StyledTableCell>{row.project.name ? row.project.name : null}</StyledTableCell>
                 <StyledTableCell>{convertDate(row.interviewDate, true)}</StyledTableCell>
-                {/*<StyledTableCell>{row.interviewer}</StyledTableCell>*/}
                 <StyledTableCell><i>{row.status}</i></StyledTableCell>
                 <StyledTableCell>
                   <ButtonGroup size="small" aria-label="small outlined button group">
@@ -197,32 +215,6 @@ export default function CandidatesPage() {
                                 onChange={changeHandler}
                               />
                             </Grid>
-                            {/*<Grid item xs={6}>*/}
-                            {/*  <TextField*/}
-                            {/*    select*/}
-                            {/*    defaultValue=''*/}
-                            {/*    variant="outlined"*/}
-                            {/*    size='small'*/}
-                            {/*    fullWidth*/}
-                            {/*    label="Рівень"*/}
-                            {/*    name="seniority"*/}
-                            {/*    onChange={changeHandler}*/}
-                            {/*  >*/}
-                            {/*    {seniorities.map(item =>*/}
-                            {/*      <MenuItem key={item} value={item}>{item}</MenuItem>*/}
-                            {/*    )}*/}
-                            {/*  </TextField>*/}
-                            {/*</Grid>*/}
-                            {/*<Grid item xs={6}>*/}
-                            {/*  <TextField*/}
-                            {/*    variant="outlined"*/}
-                            {/*    size='small'*/}
-                            {/*    fullWidth*/}
-                            {/*    label="Позиція"*/}
-                            {/*    name="position"*/}
-                            {/*    onChange={changeHandler}*/}
-                            {/*  />*/}
-                            {/*</Grid>*/}
                             <Grid item xs={12}>
                               <TextField
                                 select
@@ -265,8 +257,17 @@ export default function CandidatesPage() {
                                 fullWidth
                                 label="Зарплата"
                                 name="salary"
+                                defaultValue={2000}
                                 onChange={changeHandler}
                               />
+                            </Grid>
+                            <Grid item xs={12}>
+                              <Alert
+                                severity={alert.severity}
+                                className={alert.show ? classes.showAlert : classes.hideAlert}
+                              >
+                                {alert.message}
+                              </Alert>
                             </Grid>
                           </Grid>
                           <Button

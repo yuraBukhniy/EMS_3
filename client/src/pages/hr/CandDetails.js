@@ -9,6 +9,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import getPosition from '../../components/GetPosition';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles({
   marginDown: {
@@ -26,6 +27,12 @@ const useStyles = makeStyles({
   },
   link: {
     color: 'initial'
+  },
+  loader: {
+    position: 'absolute',
+    top: '40%',
+    left: '50%',
+    color: '#888888'
   }
 });
 
@@ -56,7 +63,7 @@ export default function CandDetails() {
   function buttonHandler() {
     axios.patch(`http://localhost:5000/cand/edit/${id}`, {newCandData, candidate})
       .then(resp => {
-        alert(resp.data.message)
+        //alert(resp.data.message)
         window.location = '/candidates';
       })
   }
@@ -67,7 +74,7 @@ export default function CandDetails() {
   
   const statuses = ['В очікуванні', 'Пропозиція', 'Співбесіда не пройдена'];
   
-  return (
+  return Object.keys(candidate).length ? (
     <>
       <Typography className={classes.marginDown} variant='h4'>
         Інформація про кандидата
@@ -150,5 +157,5 @@ export default function CandDetails() {
         </Button>
       </Grid>
     </>
-  )
+  ) : <CircularProgress size={100} className={classes.loader} />
 }

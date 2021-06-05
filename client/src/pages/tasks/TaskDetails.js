@@ -21,6 +21,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles({
   marginDown: {
@@ -44,6 +45,12 @@ const useStyles = makeStyles({
   },
   row: {
     maxWidth: 80
+  },
+  loader: {
+    position: 'absolute',
+    top: '40%',
+    left: '50%',
+    color: '#888888'
   }
 });
 
@@ -67,7 +74,7 @@ export default function TaskDetails({role}) {
       .then(res => {
         setTask(res.data)
       })
-  }, []);
+  }, [task]);
   
   useEffect(() => {
     axios.get(`http://localhost:5000/employees/team/${username}`)
@@ -122,7 +129,15 @@ export default function TaskDetails({role}) {
     ['У черзі', 'В процесі', "Виконано"]
     : ['В процесі', "Закрито"]
   
-  return (
+  function isAssigned(assigned, username) {
+    let result = false;
+    for(let item of assigned) {
+      if(item.username === username) result = true;
+    }
+    return result;
+  }
+  
+  return Object.keys(task).length ? (
     <Grid container spacing={3}>
       <Grid item xs={12} lg={8}>
         <Typography className={classes.marginDown} variant='h4'>
@@ -210,7 +225,7 @@ export default function TaskDetails({role}) {
         </Grid>
       </Grid>
   
-      {task.assignedTo ? task.assignedTo.includes(username) ?
+      {task.assignedTo ? isAssigned(task.assignedTo, username) ?
         <Grid item xs={12} md={6}>
           <Grid item xs={12}>
             <Typography className={classes.marginUp} variant='h5'>
@@ -225,6 +240,9 @@ export default function TaskDetails({role}) {
               id="date"
               label="Дата"
               name="date"
+              InputLabelProps={{
+                shrink: true,
+              }}
               onChange={event => changeOvertimeHandler(event)}
             />
           </Grid>
@@ -259,7 +277,7 @@ export default function TaskDetails({role}) {
           </Typography>
           
           {task.assignedTo.map(name =>
-            task.overtime.filter(item => item.employee === name.username).length ?
+            task.overtime.filter(item => item.employee === name.username && item.hours).length ?
               <div key={task.assignedTo.indexOf(name)}>
                 <Typography className={classes.marginUp} variant='h6'>
                   {name.firstName + ' ' + name.lastName}
@@ -296,5 +314,5 @@ export default function TaskDetails({role}) {
 
     </Grid>
     
-  )
+  ) : <CircularProgress size={100} className={classes.loader} />
 }

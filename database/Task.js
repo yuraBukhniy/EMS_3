@@ -4,7 +4,7 @@ const schema = new Schema({
   title: String,
   description: String,
   author: String,
-  startDate: {type: Date, default: new Date(Date.now())},
+  startDate: {type: Date, default: new Date(Date.now()) - 12*3600*1000},
   project: {type: Types.ObjectId, ref: 'projects'},
   assignedTo: [String],
   status: {type: String, default: 'У черзі'},

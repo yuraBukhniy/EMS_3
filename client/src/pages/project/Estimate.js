@@ -9,6 +9,8 @@ import {Alert} from "@material-ui/lab";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import {useParams} from 'react-router-dom'
+import CircularProgress from "@material-ui/core/CircularProgress";
+import {getSalary} from "./EstimateOutput";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -32,6 +34,15 @@ const useStyles = makeStyles(theme => ({
   },
   showAlert: {
     display: 'flex'
+  },
+  cancel: {
+    marginLeft: 10
+  },
+  loader: {
+    position: 'absolute',
+    top: '40%',
+    left: '50%',
+    color: '#888888'
   }
 }));
 
@@ -103,22 +114,32 @@ export default function () {
       })
   }
   
-  const positions = ['trainee', 'junior', 'middle', 'senior']
+  const cancelHandler = () => {
+    window.location = `/`;
+  }
   
-  return (
-    <Container component="main" maxWidth="sm">
+  const positions = ['trainee', 'junior', 'middle', 'senior', 'lead']
+  
+  return Object.keys(project).length && costs ? (
+    <Container component="main" maxWidth="md">
       <div className={classes.paper}>
         <h1>Налаштування проєкту</h1>
         <form noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant='body1'>
+                Місячний бюджет проєкту: <b>{project.budget || 0} $</b>
+              </Typography>
+              <Typography variant='body1'>
                 Розмір місячних витрат на зарплату працівникам: {costs} $
               </Typography>
               <Typography variant='body1'>
-                Місячний бюджет проєкту: {project.budget || 0} $
+                Витрати на майбутній персонал: {project.estimate ? getSalary(project.estimate) : 0} $
               </Typography>
-              <Grid item xs={6}>
+              <Typography variant='body1'>
+                Залишок: {project.budget - costs - (getSalary(project.estimate) || 0)} $
+              </Typography>
+              <Grid item xs={3}>
                 <TextField
                   variant="outlined"
                   size='small'
@@ -130,47 +151,31 @@ export default function () {
               </Grid>
             </Grid>
   
-            <Grid item xs={6}>
-              <Typography variant='h5'>Менеджери</Typography>
-              <Grid item xs={6}>
-                <TextField size='small' label="Кількість" name="amount"
-                           onChange={event => setManagers({
-                             ...managers,
-                             amount: +event.target.value
-                           })}
-                />
-                <TextField size='small' label="Зарплата" name="salary"
-                           onChange={event => setManagers({
-                             ...managers,
-                             salary: +event.target.value
-                           })}
-                />
-              </Grid>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant='h5'>Керівники команди</Typography>
-              <Grid item xs={6}>
-                <TextField size='small' label="Кількість" name="amount"
-                           onChange={event => setLeads({
-                             ...leads,
-                             amount: +event.target.value
-                           })}
-                />
-                <TextField size='small' label="Зарплата" name="salary"
-                           onChange={event => setLeads({
-                             ...leads,
-                             salary: +event.target.value
-                           })}
-                />
-              </Grid>
-            </Grid>
+            
+            {/*<Grid item xs={6}>*/}
+            {/*  <Typography variant='h5'>Керівники команди</Typography>*/}
+            {/*  <Grid item xs={6}>*/}
+            {/*    <TextField size='small' label="Кількість" name="amount"*/}
+            {/*               onChange={event => setLeads({*/}
+            {/*                 ...leads,*/}
+            {/*                 amount: +event.target.value*/}
+            {/*               })}*/}
+            {/*    />*/}
+            {/*    <TextField size='small' label="Зарплата" name="salary"*/}
+            {/*               onChange={event => setLeads({*/}
+            {/*                 ...leads,*/}
+            {/*                 salary: +event.target.value*/}
+            {/*               })}*/}
+            {/*    />*/}
+            {/*  </Grid>*/}
+            {/*</Grid>*/}
   
             <Grid item xs={12}>
               <Typography variant='h5'>Розробники</Typography>
             </Grid>
             <Grid container spacing={2} className={classes.inputBlock}>
               {positions.map(position =>
-                <Grid key={positions.indexOf(position)} item xs={3}>
+                <Grid key={positions.indexOf(position)} item xs={2}>
                   <Typography variant='h6'>{position}</Typography>
         
                   <TextField size='small' label="Кількість" name={position}
@@ -188,7 +193,7 @@ export default function () {
             </Grid>
             <Grid container spacing={2} className={classes.inputBlock}>
               {positions.map(position =>
-                <Grid key={positions.indexOf(position)} item xs={3}>
+                <Grid key={positions.indexOf(position)} item xs={2}>
                   <Typography variant='h6'>{position}</Typography>
         
                   <TextField size='small' label="Кількість" name={position}
@@ -201,7 +206,7 @@ export default function () {
               )}
             </Grid>
   
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <Typography variant='h5'>Аналітики</Typography>
               <Grid item xs={6}>
                 <TextField size='small' label="Кількість" name="amount"
@@ -218,7 +223,7 @@ export default function () {
                 />
               </Grid>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <Typography variant='h5'>Дизайнери</Typography>
               <Grid item xs={6}>
                 <TextField size='small' label="Кількість" name="amount"
@@ -230,6 +235,23 @@ export default function () {
                 <TextField size='small' label="Зарплата" name="salary"
                            onChange={event => setDesigners({
                              ...designers,
+                             salary: +event.target.value
+                           })}
+                />
+              </Grid>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography variant='h5'>Менеджери</Typography>
+              <Grid item xs={6}>
+                <TextField size='small' label="Кількість" name="amount"
+                           onChange={event => setManagers({
+                             ...managers,
+                             amount: +event.target.value
+                           })}
+                />
+                <TextField size='small' label="Зарплата" name="salary"
+                           onChange={event => setManagers({
+                             ...managers,
                              salary: +event.target.value
                            })}
                 />
@@ -253,11 +275,20 @@ export default function () {
               >
                 Зберегти
               </Button>
+              <Button
+                type="button"
+                variant="contained"
+                color="secondary"
+                className={classes.cancel}
+                onClick={cancelHandler}
+              >
+                Назад
+              </Button>
             </Grid>
             
           </Grid>
         </form>
       </div>
     </Container>
-  )
+  ) : <CircularProgress size={100} className={classes.loader} />
 }

@@ -37,7 +37,7 @@ export default function ServiceDetails({id, admin}) {
       .then(res => {
         setRequest(res.data)
       })
-  }, []);
+  }, [request]);
   
   function changeStatusHandler(value) {
     setStatus(value)
@@ -55,7 +55,13 @@ export default function ServiceDetails({id, admin}) {
     //window.location = '/service';
   }
   
-  const statuses = ['У черзі', 'Відхилено', 'В процесі', 'Виконано', 'Закрито'];
+  const statusesIQ = ['В процесі', 'Відхилено'];
+  const statusesIP = ['Виконано', 'Відхилено'];
+  const statusesDone = ['Закрито', 'В процесі'];
+  const statuses = request.status === 'У черзі' ? statusesIQ
+    : request.status === 'В процесі' ? statusesIP
+    : request.status === 'Виконано' ? statusesDone
+    : ['Відхилено', 'В процесі', 'Виконано', 'Закрито'];
   
   return (
     <Grid container spacing={4}>

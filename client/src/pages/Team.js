@@ -63,6 +63,10 @@ export default function Team({manager}) {
           setEmployees(res.data)
         })
     }
+    else {
+      const userId = JSON.parse(localStorage.getItem('user')).userId;
+      axios.post(`http://localhost:5000/payment/${userId}`).then()
+    }
   }, []);
   
   return (

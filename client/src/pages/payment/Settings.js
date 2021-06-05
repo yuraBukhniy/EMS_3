@@ -61,6 +61,7 @@ export default function ({open, onClose}) {
           severity: 'success',
           message: resp.data.message
         })
+        axios.post(`http://localhost:5000/payment/payroll`).then(res => {})
       })
       .catch(err => {
         setAlert({
@@ -85,6 +86,9 @@ export default function ({open, onClose}) {
                 label="Дата нарахування"
                 name="date"
                 type="date"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 onChange={changeHandler}
               />
             </Grid>

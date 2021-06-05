@@ -7,8 +7,6 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from "@material-ui/core/Typography";
 import Modal from "@material-ui/core/Modal";
 import axios from "axios";
-
-import EditProject from "./EditProject";
 import Grid from "@material-ui/core/Grid";
 
 const useStyles = makeStyles(theme => ({
@@ -55,13 +53,24 @@ export default function Projects({role}) {
   const classes = useStyles();
   const [projects, setProjects] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const userId = JSON.parse(localStorage.getItem('user')).userId;
   
   useEffect(() => {
     axios.get('http://localhost:5000/project/get')
       .then(res => {
         setProjects(res.data)
       })
+    //axios.post(`http://localhost:5000/payment/${userId}`).then()
   }, []);
+  
+  const positions = {
+    managers: 'Менеджерів',
+    leads: 'Керівників команди',
+    devs: 'Розробників',
+    testers: 'Тестувальників',
+    analysts: 'Аналітиків',
+    designers: 'Дизайнерів'
+  };
   
   return (
     <>
@@ -88,67 +97,36 @@ export default function Projects({role}) {
                   На проєкт потрібно найняти:
                 </Typography>
                 <Grid container>
-                  {project.estimate.managers ?
-                    <Grid item xs={3}>
-                      Менеджерів
+                  {Object.keys(project.estimate).map(item =>
+                    item === 'devs' || item === 'testers' ?
+                      getOverallAmount(project.estimate[item]) ?
+                        <Grid item xs={4}>
+                          {positions[item]}
+                          <Typography variant="h5">
+                            {getOverallAmount(project.estimate[item])}
+                          </Typography>
+                        </Grid> : null :
+                      
+                    project.estimate[item].amount ?
+                    <Grid item xs={4}>
+                      {positions[item]}
                       <Typography variant="h5">
-                        {project.estimate.managers.amount}
+                        {project.estimate[item].amount}
                       </Typography>
-                    </Grid>
-                  : null}
-                  {project.estimate.leads ?
-                    <Grid item xs={3}>
-                      Керівників команди
-                      <Typography variant="h5">
-                        {project.estimate.leads.amount}
-                      </Typography>
-                    </Grid>
-                  : null}
-                  {project.estimate.devs ?
-                    <Grid item xs={3}>
-                      Розробників
-                      <Typography variant="h5">
-                        {getOverallAmount(project.estimate.devs)}
-                      </Typography>
-                    </Grid>
-                  : null}
-                  {project.estimate.testers ?
-                    <Grid item xs={3}>
-                      Тестувальників
-                      <Typography variant="h5">
-                        {getOverallAmount(project.estimate.testers)}
-                      </Typography>
-                    </Grid>
-                  : null}
-                  {project.estimate.analysts ?
-                    <Grid item xs={3}>
-                      Аналітиків
-                      <Typography variant="h5">
-                        {project.estimate.analysts.amount}
-                      </Typography>
-                    </Grid>
-                    : null}
-                  {project.estimate.designers ?
-                    <Grid item xs={3}>
-                      Дизайнерів
-                      <Typography variant="h5">
-                        {project.estimate.designers.amount}
-                      </Typography>
-                    </Grid>
-                    : null}
+                    </Grid> : null
+                  )}
                 </Grid>
               </> : null}
             
           </CardContent>
           <CardActions>
             <Button size="small" onClick={() => viewDetailsHandler(project._id)}>Переглянути деталі</Button>
-            {/*<Button size="small" onClick={() => setOpenModal(true)}>Edit</Button>*/}
           </CardActions>
-          <Modal open={openModal} onClose={()=>setOpenModal(false)}>
-            <div className={classes.paper}>
-              <EditProject project={project} />
-            </div>
-          </Modal>
+          {/*<Modal open={openModal} onClose={()=>setOpenModal(false)}>*/}
+          {/*  <div className={classes.paper}>*/}
+          {/*    <EditProject project={project} />*/}
+          {/*  </div>*/}
+          {/*</Modal>*/}
           
         </Card>
       ))}

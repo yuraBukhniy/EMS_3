@@ -12,7 +12,7 @@ import Card from "@material-ui/core/Card";
 import Avatar from "@material-ui/core/Avatar";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
-import getEstimate from "./EstimateOutput";
+import {getAmount, getEstimate} from "./EstimateOutput";
 
 const useStyles = makeStyles({
   marginDown: {
@@ -70,6 +70,10 @@ export default function ProjectDetails({role}) {
       .then(res => {
         setEmployees(res.data)
       })
+    if(role === 'manager') {
+      const userId = JSON.parse(localStorage.getItem('user')).userId;
+      axios.post(`http://localhost:5000/payment/${userId}`).then()
+    }
   }, []);
   
   return loading ?
@@ -95,7 +99,7 @@ export default function ProjectDetails({role}) {
           </Typography>
           
           <Grid item xs={12}>
-            {project.estimate && role !== 'employee' && role !== 'teamLead' ? (
+            {getAmount(project.estimate) && role !== 'employee' && role !== 'teamLead' ? (
               <>
                 <Typography className={classes.marginUp} variant='h5'>
                   Потреби в персоналі
@@ -103,8 +107,6 @@ export default function ProjectDetails({role}) {
                 <Divider />
                 <Typography className={classes.marginUp} variant='h6'>
                   На проєкт потрібно найняти:
-                </Typography>
-                <Typography className={classes.marginUp} variant='h6'>
                   {getEstimate(project.estimate)}
                 </Typography>
               </>

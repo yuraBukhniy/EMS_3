@@ -10,6 +10,7 @@ import Button from "@material-ui/core/Button";
 import {useParams} from "react-router-dom";
 import convertDate from "../../components/ConvertDate";
 import {saveAs} from 'file-saver';
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   marginDown: {
@@ -32,6 +33,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
     marginLeft: 10
   },
+  loader: {
+    position: 'absolute',
+    top: '40%',
+    left: '50%',
+    color: '#888888'
+  }
 }));
 
 export default function LeaveDetails({lead}) {
@@ -72,7 +79,7 @@ export default function LeaveDetails({lead}) {
       })
   }
   
-  return (
+  return Object.keys(leave).length ? (
     <Grid container spacing={4}>
       <Grid item xs={12} md={6}>
         <Typography className={classes.marginDown} variant='h4'>
@@ -115,14 +122,17 @@ export default function LeaveDetails({lead}) {
                 `${leave.author.leavesAvailable.illness}` : null}
               </li>
             </ul> : null}
-        
-        <Typography className={classes.marginUp} variant='h5'>
-          Опис
-        </Typography>
-        <Divider />
-        <Typography variant='h6'>
-          {leave.description}
-        </Typography>
+  
+        {leave.description ?
+          <>
+            <Typography className={classes.marginUp} variant='h5'>
+              Опис
+            </Typography>
+            <Divider />
+            <Typography variant='h6'>
+              {leave.description}
+            </Typography>
+          </> : null}
         
         {lead && leave.status === 'Очікує підтвердження' ?
           <>
@@ -149,7 +159,7 @@ export default function LeaveDetails({lead}) {
           type="button"
           variant="contained"
           color="default"
-          className={classes.cancel}
+          className={classes.submit}
           onClick={generateReport}
         >
           Звіт у PDF
@@ -157,5 +167,5 @@ export default function LeaveDetails({lead}) {
       </Grid>
       
     </Grid>
-  )
+  ) : <CircularProgress size={100} className={classes.loader} />
 }

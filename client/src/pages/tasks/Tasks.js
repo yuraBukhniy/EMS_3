@@ -44,9 +44,6 @@ export default function Task({role}) {
   const [projectTasks, setProjectTasks] = useState([]);
   const username = JSON.parse(localStorage.getItem('user')).username;
   const projectId = JSON.parse(localStorage.getItem('user')).project;
-  // const url = role === 'employee' ? `http://localhost:5000/task/user/${username}`
-  //   : role === 'teamLead' ? `http://localhost:5000/task/project/${projectId}`
-  //   : ``
   
   useEffect(() => {
     if(role !== 'manager') {
@@ -61,20 +58,11 @@ export default function Task({role}) {
           setProjectTasks(res.data)
         })
     }
-    
+    else {
+      const userId = JSON.parse(localStorage.getItem('user')).userId;
+      axios.post(`http://localhost:5000/payment/${userId}`).then()
+    }
   }, []);
-  
-  // let dataPie = {
-  //   labels: ["40%", "20%", "40%"],
-  //   series: [40, 20, 40]
-  // }
-  // let options = {
-  //   plugins: [
-  //     Chartist.plugins.legend({
-  //       legendNames: ["40%", "20%", "40%"]
-  //     })
-  //   ]
-  // };
   
   return (
     <>

@@ -69,13 +69,9 @@ export default function () {
                 {employee.seniority + " " + employee.position}
               </Typography>
               <Typography variant="body2" component="p">
-                {employee.project.name}
+                {employee.project ? employee.project.name : null}
               </Typography>
             </CardContent>
-            <CardActions>
-              {/*<Button size="small" onClick={() => viewDetailsHandler(employee._id)}>View Details</Button>*/}
-              {/*<Button size="small" onClick={() => setOpenModal(true)}>Edit</Button>*/}
-            </CardActions>
           </Card>
         </Grid>
       ))}

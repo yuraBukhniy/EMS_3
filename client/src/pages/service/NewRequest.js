@@ -53,8 +53,7 @@ export default function NewRequest() {
       .then(resp => {
         console.log(resp.data)
       })
-    //window.location = '/tasks';
-    //console.log({taskData, assigned})
+    window.location = '/service';
   };
   
   const cancelHandler = () => {
@@ -110,7 +109,7 @@ export default function NewRequest() {
             className={classes.cancel}
             onClick={cancelHandler}
           >
-            Назад
+            Скасувати
           </Button>
         </form>
       </div>

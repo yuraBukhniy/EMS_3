@@ -150,6 +150,9 @@ export default function NewLeave() {
                 label="Дата початку"
                 name="startDate"
                 onChange={changeHandler}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -162,6 +165,9 @@ export default function NewLeave() {
                 label="Дата закінчення"
                 name="endDate"
                 onChange={changeHandler}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6}>

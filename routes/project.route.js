@@ -45,7 +45,6 @@ router.patch('/setestimate/:id', async (req, res) => {
     const sum = findSum(managers) + findSum(leads) + findSum(designers) + findSum(analysts) + devSum + testerSum
     const budget = newBudget ? newBudget : currentBudget
     
-    console.log({sum, budget, costs})
     if(sum > budget - costs) {
       return res.status(201).json({
         message: `Витрати на персонал не можуть бути більшими за бюджет. Перевищення на ${sum + costs - budget} $`

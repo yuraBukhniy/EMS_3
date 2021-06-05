@@ -73,7 +73,6 @@ export default function NewTask() {
   const buttonHandler = async () => {
     axios.post('http://localhost:5000/task/create', {taskData, assigned})
       .then(resp => {
-        alert(resp.data.message)
         window.location = '/tasks';
       })
     //console.log({taskData, assigned})
@@ -130,13 +129,16 @@ export default function NewTask() {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+              <Typography variant='body2'>
+                Кінцевий термін
+              </Typography>
               <TextField
-                type='datetime-local'
+                type='date'
+                inputProps={{min: (new Date(Date.now())).toLocaleString()}}
                 variant="outlined"
                 size='small'
                 fullWidth
                 id="deadline"
-                label="Кінцевий термін"
                 name="deadline"
                 onChange={changeHandler}
               />
@@ -184,7 +186,7 @@ export default function NewTask() {
             className={classes.cancel}
             onClick={cancelHandler}
           >
-            Назад
+            Скасувати
           </Button>
         </form>
       </div>
