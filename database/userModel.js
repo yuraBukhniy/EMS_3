@@ -10,7 +10,7 @@ const schema = new Schema({
   seniority: String,
   position: { type: String },
   role: { type: String, default: 'employee' },
-  registeredDate: { type: Date, default: new Date(Date.now() - 12*3600*1000), required: true },
+  registeredDate: { type: Date, default: new Date(Date.now()), required: true },
   supervisor: {type: String},
   project: {type: Types.ObjectId, ref: 'projects'},
   salary: Number,
